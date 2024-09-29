@@ -6,7 +6,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import Profile from "./profile";
+import ProfileDropDown from "@/components/layout/header/profile-dropdown";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export const Header = () => {
@@ -24,24 +24,16 @@ export const Header = () => {
       </nav>
       <div className="inline-flex items-center space-x-2">
         {status === "authenticated" && session ? (
-          <Profile session={session} />
+          <ProfileDropDown session={session} />
         ) : status === "loading" ? (
           <Button variant="outline" className="border-none p-5" isLoading />
         ) : (
-          <>
-            <Link
-              href="/sign-in"
-              className={buttonVariants({ variant: "outline", size: "sm" })}
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/sign-up"
-              className={buttonVariants({ variant: "default", size: "sm" })}
-            >
-              Sign up
-            </Link>
-          </>
+          <Link
+            href="/sign-in"
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            Sign in
+          </Link>
         )}
         <ThemeToggle />
       </div>

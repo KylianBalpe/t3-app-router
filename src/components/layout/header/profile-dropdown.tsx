@@ -14,6 +14,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -24,7 +25,7 @@ import { CircleUser } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { type Session } from "next-auth";
 
-export default function Profile({ session }: { session: Session }) {
+export default function ProfileDropDown({ session }: { session: Session }) {
   return (
     <AlertDialog>
       <DropdownMenu>
@@ -37,7 +38,7 @@ export default function Profile({ session }: { session: Session }) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>{session.user.firstName}</DropdownMenuItem>
+          <DropdownMenuItem>{session.user.name}</DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuSeparator />
           <AlertDialogTrigger asChild>
@@ -50,6 +51,7 @@ export default function Profile({ session }: { session: Session }) {
           <AlertDialogTitle className="p-2 text-center text-3xl font-bold">
             Are you sure you want to sign out?
           </AlertDialogTitle>
+          <AlertDialogDescription className="hidden"></AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex flex-row items-center justify-center sm:justify-center">
           <AlertDialogCancel>Cancel</AlertDialogCancel>

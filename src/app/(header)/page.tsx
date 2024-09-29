@@ -10,7 +10,7 @@ export default async function Home() {
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
           Create T3 App
         </h1>
-        {session && <p>Welcome back, {session.user.firstName}</p>}
+        {session && <p>Welcome back, {session.user.name}</p>}
       </main>
     </HydrateClient>
   );
