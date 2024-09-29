@@ -14,13 +14,20 @@ export const Header = () => {
 
   return (
     <header className="absolute top-0 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-12">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+      <nav className="hidden flex-col gap-2 text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
         <Link
           href="/"
-          className={buttonVariants({ size: "icon", variant: "outline" })}
+          className={buttonVariants({
+            size: "icon",
+            variant: "ghost",
+            className: "p-0 hover:bg-transparent",
+          })}
         >
           <Triangle className="size-5 fill-foreground" />
         </Link>
+        <p className="from-primary from-50% to-primary/40 bg-clip-text text-xl font-semibold dark:bg-gradient-to-b dark:text-transparent">
+          T3 App
+        </p>
       </nav>
       <div className="inline-flex items-center space-x-2">
         {status === "authenticated" && session ? (
