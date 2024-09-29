@@ -1,4 +1,4 @@
-import SignInForm from "@/components/authentication/signin-form";
+import SignInForm from "@/components/authentication/sign-in";
 import { buttonVariants } from "@/components/ui/button";
 import { getServerAuthSession } from "@/server/auth";
 import Link from "next/link";

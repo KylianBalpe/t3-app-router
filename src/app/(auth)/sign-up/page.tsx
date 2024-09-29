@@ -1,4 +1,4 @@
-import SignUpForm from "@/components/authentication/signup-form";
+import SignUpForm from "@/components/authentication/sign-up";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 

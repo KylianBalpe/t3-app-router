@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { Bcrypt } from "oslo/password";
 import { nanoid } from "nanoid";
-import { signInSchema, signUpSchema } from "@/lib/schema/auth-schema";
+import { signUpSchema } from "@/lib/schema/auth-schema";
 
 export const authRouter = createTRPCRouter({
   signUp: publicProcedure
@@ -29,34 +29,5 @@ export const authRouter = createTRPCRouter({
           password: hashedPassword,
         },
       });
-    }),
-
-  signIn: publicProcedure
-    .input(signInSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.user.findUnique({
-        where: {
-          email: input.email,
-        },
-      });
-
-      if (!user) {
-        return {
-          errors: "Invalid Credentials",
-        };
-      }
-
-      const isPasswordValid = await new Bcrypt().verify(
-        input.password,
-        user.password!,
-      );
-
-      if (!isPasswordValid) {
-        return {
-          errors: "Invalid Credentials",
-        };
-      }
-
-      return { user };
     }),
 });

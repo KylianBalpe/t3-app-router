@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input, InputPassword } from "@/components/ui/input";
 import { signInSchema } from "@/lib/schema/auth-schema";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -99,7 +99,7 @@ export default function SignInForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Password" type="password" {...field} />
+                    <InputPassword placeholder="Password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

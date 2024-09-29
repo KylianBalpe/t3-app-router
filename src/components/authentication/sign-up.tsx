@@ -29,6 +29,7 @@ import * as React from "react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
+import { signIn } from "next-auth/react";
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -45,8 +46,7 @@ export default function SignUpForm() {
 
   const registerMutation = api.auth.signUp.useMutation({
     onSuccess: () => {
-      toast("Account created successfully");
-      router.push("/");
+      toast("Registration successful");
       setIsLoading(false);
     },
     onError: (error) => {
@@ -58,6 +58,13 @@ export default function SignUpForm() {
   async function onSubmit(values: z.infer<typeof signUpSchema>) {
     setIsLoading(true);
     await registerMutation.mutateAsync(values);
+    await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+
+    router.push("/");
   }
 
   return (
@@ -127,7 +134,7 @@ export default function SignUpForm() {
             />
             <CardFooter className="flex flex-col gap-2 p-0">
               <Button type="submit" className="w-full" isLoading={isLoading}>
-                Sign Up
+                Sign up
               </Button>
               <div className="relative flex w-full items-center justify-center py-4">
                 <Separator />
@@ -142,7 +149,7 @@ export default function SignUpForm() {
                   className: "w-full",
                 })}
               >
-                Sign In
+                Sign in
               </Link>
             </CardFooter>
           </form>
