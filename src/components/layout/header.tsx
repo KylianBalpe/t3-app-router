@@ -6,28 +6,29 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import ProfileDropDown from "@/components/layout/header/profile-dropdown";
+import ProfileDropDown from "@/components/layout/profile-dropdown";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export const Header = () => {
   const { data: session, status } = useSession();
 
   return (
-    <header className="absolute top-0 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-4 sm:px-12">
-      <nav className="hidden flex-col gap-2 text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
+    <header className="sticky top-0 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-4 sm:px-12">
+      <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
         <Link
           href="/"
           className={buttonVariants({
             size: "icon",
             variant: "ghost",
-            className: "p-0 hover:bg-transparent",
+            className:
+              "inline-flex w-full items-center p-0 hover:bg-transparent",
           })}
         >
-          <Triangle className="size-5 fill-foreground" />
+          <Triangle className="mr-2 size-5 fill-foreground" />
+          <p className="from-primary from-50% to-primary/40 bg-clip-text text-xl font-semibold dark:bg-gradient-to-b dark:text-transparent">
+            T3 App
+          </p>
         </Link>
-        <p className="from-primary from-50% to-primary/40 bg-clip-text text-xl font-semibold dark:bg-gradient-to-b dark:text-transparent">
-          T3 App
-        </p>
       </nav>
       <Triangle className="block size-8 fill-foreground sm:hidden" />
       <div className="inline-flex items-center space-x-2">
