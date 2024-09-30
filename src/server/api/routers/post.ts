@@ -5,6 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
+import { createPostSchema } from "@/lib/schemas/post-schema";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -15,15 +16,16 @@ export const postRouter = createTRPCRouter({
       };
     }),
 
-  // create: protectedProcedure
-  //   .input(z.object({ post: z.string().min(1) }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     return ctx.db.post.create({
-  //       data: {
-  //         post: input.post,
-  //       },
-  //     });
-  //   }),
+  create: protectedProcedure
+    .input(createPostSchema)
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.create({
+        data: {
+          post: input.post,
+          authorId: ctx.session.user.id,
+        },
+      });
+    }),
 
   // getLatest: protectedProcedure.query(async ({ ctx }) => {
   //   const post = await ctx.db.post.findFirst({

@@ -13,7 +13,7 @@ export const Header = () => {
   const { data: session, status } = useSession();
 
   return (
-    <header className="absolute top-0 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-12">
+    <header className="absolute top-0 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-4 sm:px-12">
       <nav className="hidden flex-col gap-2 text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
         <Link
           href="/"
@@ -29,6 +29,7 @@ export const Header = () => {
           T3 App
         </p>
       </nav>
+      <Triangle className="block size-8 fill-foreground sm:hidden" />
       <div className="inline-flex items-center space-x-2">
         {status === "authenticated" && session ? (
           <ProfileDropDown session={session} />

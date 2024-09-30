@@ -12,8 +12,9 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { getServerAuthSession } from "@/server/auth";
 import { redirect, RedirectType } from "next/navigation";
-import GitHubSignInButton from "@/components/authentication/github-signin";
 import { buttonVariants } from "@/components/ui/button";
+import GitHubSignInButton from "@/components/authentication/github-signin";
+import GoogleSignInButton from "@/components/authentication/google-signin";
 
 export default async function SignInPage() {
   const session = await getServerAuthSession();
@@ -33,10 +34,9 @@ export default async function SignInPage() {
           <GitHubSignInButton />
           <div className="relative flex w-full items-center justify-center py-4">
             <Separator />
-            <span className="absolute bg-background px-2 text-sm">
-              Don&apos;t have an account?
-            </span>
+            <span className="absolute bg-background px-2 text-sm">OR</span>
           </div>
+          <GoogleSignInButton />
         </CardContent>
       </Card>
       <Link href="/" className={buttonVariants({ variant: "link" })}>
