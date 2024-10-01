@@ -46,6 +46,27 @@ export const postRouter = createTRPCRouter({
     });
   }),
 
+  getUserPosts: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      return ctx.db.post.findMany({
+        where: {
+          authorId: input,
+          deletedAt: null,
+          isPublic: true,
+          isArchive: false,
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+              username: true,
+            },
+          },
+        },
+      });
+    }),
+
   //   return post ?? null;
   // }),
 
