@@ -49,12 +49,25 @@ export const postRouter = createTRPCRouter({
   getUserPosts: publicProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          username: input,
+        },
+      });
+
+      if (!user) {
+        return null;
+      }
+
       return ctx.db.post.findMany({
         where: {
-          authorId: input,
+          authorId: user.id,
           deletedAt: null,
           isPublic: true,
           isArchive: false,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
         include: {
           author: {
@@ -63,6 +76,69 @@ export const postRouter = createTRPCRouter({
               username: true,
             },
           },
+        },
+      });
+    }),
+
+  getUserArchivedPosts: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.post.findMany({
+      where: {
+        authorId: ctx.session.user.id,
+        deletedAt: null,
+        isPublic: false,
+        isArchive: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            username: true,
+          },
+        },
+      },
+    });
+  }),
+
+  archivePost: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.update({
+        where: {
+          id: input,
+        },
+        data: {
+          isArchive: true,
+          isPublic: false,
+        },
+      });
+    }),
+
+  unarchivePost: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.update({
+        where: {
+          id: input,
+        },
+        data: {
+          isArchive: false,
+          isPublic: true,
+        },
+      });
+    }),
+
+  deletePost: protectedProcedure
+    .input(z.number())
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.update({
+        where: {
+          id: input,
+        },
+        data: {
+          deletedAt: new Date(),
         },
       });
     }),

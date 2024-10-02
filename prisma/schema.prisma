@@ -17,7 +17,7 @@ datasource db {
 model Post {
     id        Int     @id @default(autoincrement())
     post      String  @db.Text
-    isPublic  Boolean @default(false) @map("is_public")
+    isPublic  Boolean @default(true) @map("is_public")
     isArchive Boolean @default(false) @map("is_archive")
 
     createdAt DateTime  @default(now()) @map("created_at")

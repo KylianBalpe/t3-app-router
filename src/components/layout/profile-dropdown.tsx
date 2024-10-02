@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { CircleUser } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { type Session } from "next-auth";
+import Link from "next/link";
 
 export default function ProfileDropDown({ session }: { session: Session }) {
   return (
@@ -38,7 +39,9 @@ export default function ProfileDropDown({ session }: { session: Session }) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>{session.user.name}</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href={`/${session.user.username}`}>{session.user.name}</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuSeparator />
           <AlertDialogTrigger asChild>
