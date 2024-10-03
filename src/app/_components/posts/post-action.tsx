@@ -85,11 +85,7 @@ export default function PostAction({ action }: { action: ActionType }) {
 
   const handleDelete = async (id: number) => {
     setIsLoading(true);
-    try {
-      await deleteMutation.mutateAsync(id);
-    } catch (error) {
-      console.error(error);
-    }
+    await deleteMutation.mutateAsync(id);
   };
 
   return (

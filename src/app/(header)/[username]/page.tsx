@@ -2,10 +2,10 @@ import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
-import UserSkeleton from "./_components/user-skeleton";
+import UserSkeleton from "../../_components/user/user-skeleton";
 import SessionProvider from "@/components/provider/session-provider";
-import UserPosts from "./_components/user-post";
-import UserDetail from "./_components/user-detail";
+import UserPosts from "../../_components/user/user-post";
+import UserDetail from "../../_components/user/user-detail";
 export default async function UserPage({
   params,
 }: {

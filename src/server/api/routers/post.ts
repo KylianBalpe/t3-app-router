@@ -42,9 +42,45 @@ export const postRouter = createTRPCRouter({
             username: true,
           },
         },
+        comments: {
+          select: {
+            id: true,
+            comment: true,
+          },
+        },
       },
     });
   }),
+
+  getPostById: publicProcedure
+    .input(z.number())
+    .query(async ({ ctx, input }) => {
+      return ctx.db.post.findUnique({
+        where: {
+          id: input,
+        },
+        include: {
+          comments: {
+            select: {
+              id: true,
+              comment: true,
+              author: {
+                select: {
+                  name: true,
+                  username: true,
+                },
+              },
+            },
+          },
+          author: {
+            select: {
+              name: true,
+              username: true,
+            },
+          },
+        },
+      });
+    }),
 
   getUserPosts: publicProcedure
     .input(z.string())
@@ -56,7 +92,7 @@ export const postRouter = createTRPCRouter({
       });
 
       if (!user) {
-        return null;
+        throw new Error("User not found");
       }
 
       return ctx.db.post.findMany({
@@ -74,6 +110,12 @@ export const postRouter = createTRPCRouter({
             select: {
               name: true,
               username: true,
+            },
+          },
+          comments: {
+            select: {
+              id: true,
+              comment: true,
             },
           },
         },
@@ -96,6 +138,12 @@ export const postRouter = createTRPCRouter({
           select: {
             name: true,
             username: true,
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            comment: true,
           },
         },
       },
@@ -142,11 +190,4 @@ export const postRouter = createTRPCRouter({
         },
       });
     }),
-
-  //   return post ?? null;
-  // }),
-
-  // getSecretMessage: protectedProcedure.query(() => {
-  //   return "you can now see this secret message!";
-  // }),
 });

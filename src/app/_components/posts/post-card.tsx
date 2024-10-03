@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import PostAction from "./post-action";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { type PostType } from "./post-type";
+import PostDetail from "./post-detail";
 
 export default function PostCard({ post }: { post: PostType }) {
   const { data } = useSession();
@@ -32,6 +34,9 @@ export default function PostCard({ post }: { post: PostType }) {
           <PostAction action={post} />
         </div>
       )}
+      <CardFooter className="flex flex-row items-center justify-end p-2">
+        <PostDetail postId={post.id} />
+      </CardFooter>
     </Card>
   );
 }

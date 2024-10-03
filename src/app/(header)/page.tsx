@@ -1,8 +1,8 @@
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
-import Posts from "./_components/post";
+import Posts from "../_components/posts/post";
 import * as React from "react";
-import CreatePost from "./_components/post-create";
+import CreatePost from "../_components/posts/post-create";
 import { LoadingSpinner } from "@/components/icon/loading";
 
 export default async function Home() {

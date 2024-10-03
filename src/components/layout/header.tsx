@@ -13,7 +13,7 @@ export const Header = () => {
   const { data: session, status } = useSession();
 
   return (
-    <header className="sticky top-0 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-4 sm:px-12">
+    <header className="sticky top-0 z-40 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-4 sm:px-12">
       <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
         <Link
           href="/"

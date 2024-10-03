@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import PostCard from "@/app/(header)/_components/post-card";
+import PostCard from "@/app/_components/posts/post-card";
 import { api } from "@/trpc/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "next-auth/react";

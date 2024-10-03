@@ -11,4 +11,10 @@ export type PostType = {
     name: string | null;
     username: string | null;
   };
+  comments: CommentType[];
+};
+
+export type CommentType = {
+  id: number;
+  comment: string;
 };
