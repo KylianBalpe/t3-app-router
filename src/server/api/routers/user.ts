@@ -6,6 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { editUsernameSchema } from "@/lib/schemas/user-schema";
+import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
   getUser: publicProcedure.input(z.string()).query(async ({ input, ctx }) => {
@@ -18,7 +19,7 @@ export const userRouter = createTRPCRouter({
 
   updateUsername: protectedProcedure
     .input(editUsernameSchema)
-    .query(async ({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const usernameExist = await ctx.db.user.findUnique({
         where: {
           username: input.username,
@@ -26,7 +27,10 @@ export const userRouter = createTRPCRouter({
       });
 
       if (usernameExist) {
-        throw new Error("Username already exits");
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Username already exist",
+        });
       }
 
       return ctx.db.user.update({

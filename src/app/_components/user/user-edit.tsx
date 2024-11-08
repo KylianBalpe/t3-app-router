@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
@@ -14,7 +14,6 @@ import {
   FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -26,27 +25,63 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 
 export default function EditUsername() {
   const { data: session } = useSession();
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  const trpc = api.useUtils();
+  const router = useRouter();
+
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [isSubmit, setIsSubmit] = React.useState(false);
 
   const form = useForm<z.infer<typeof editUsernameSchema>>({
     resolver: zodResolver(editUsernameSchema),
     defaultValues: {
-      username: session?.user.username,
+      username: "",
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof editUsernameSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  React.useEffect(() => {
+    if (session) {
+      form.setValue("username", session.user.username);
+    }
+
+    if (dialogOpen === false) {
+      form.reset();
+    }
+  }, [session, form, dialogOpen]);
+
+  const updateUsernameMutation = api.user.updateUsername.useMutation({
+    onSuccess: (data) => {
+      setIsSubmit(false);
+      toast("Username updated");
+      form.reset();
+      void trpc.user.invalidate();
+      router.push(`/${data.username}`);
+    },
+    onError: (error) => {
+      setIsSubmit(false);
+      toast(error.message);
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof editUsernameSchema>) {
+    setIsSubmit(true);
+    try {
+      await updateUsernameMutation.mutateAsync(values);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmit(false);
+    }
   }
+
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           Change Username
@@ -54,35 +89,35 @@ export default function EditUsername() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
+          <DialogTitle>Change Username</DialogTitle>
+          <DialogDescription className="hidden">
             This action cannot be undone. This will permanently delete your
             account and remove your data from our servers.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col space-y-8 p-4"
+          >
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Your username"
                       {...field}
-                      disabled={isLoading}
+                      disabled={isSubmit}
                     />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
+                  <FormDescription>Username cannot be empty.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" size="sm" isLoading={isLoading}>
+            <Button type="submit" size="sm" isLoading={isSubmit}>
               Submit
             </Button>
           </form>
