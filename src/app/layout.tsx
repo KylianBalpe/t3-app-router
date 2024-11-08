@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/sonner";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/provider/theme-provider";
+import { HydrateClient } from "@/trpc/server";
+import SessionProvider from "@/components/provider/session-provider";
 
 export const metadata: Metadata = {
   title: "T3 App",
@@ -30,7 +32,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <HydrateClient>
+              <SessionProvider>{children}</SessionProvider>
+            </HydrateClient>
           </ThemeProvider>
         </TRPCReactProvider>
         <Toaster />
