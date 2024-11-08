@@ -14,6 +14,8 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { type PostType } from "./post-type";
 import PostDetail from "./post-detail";
+import { buttonVariants } from "@/components/ui/button";
+import { MessageCircleMore } from "lucide-react";
 
 export default function PostCard({ post }: { post: PostType }) {
   const { data } = useSession();
@@ -35,7 +37,18 @@ export default function PostCard({ post }: { post: PostType }) {
         </div>
       )}
       <CardFooter className="flex flex-row items-center justify-end p-2">
-        <PostDetail postId={post.id} />
+        <Link
+          href={`/post/${post.id}`}
+          className={buttonVariants({
+            size: "sm",
+            variant: "ghost",
+            className: "rounded-sm text-sm",
+          })}
+        >
+          <MessageCircleMore className="mr-1 h-5 w-5" />
+          <p>{post.comments.length}</p>
+        </Link>
+        {/* <PostDetail postId={post.id} /> */}
       </CardFooter>
     </Card>
   );

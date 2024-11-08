@@ -1,7 +1,7 @@
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
 import Posts from "../_components/posts/post";
-import * as React from "react";
+import React, { Suspense } from "react";
 import CreatePost from "../_components/posts/post-create";
 import { LoadingSpinner } from "@/components/icon/loading";
 
@@ -13,9 +13,9 @@ export default async function Home() {
     <HydrateClient>
       <div className="flex w-full flex-col items-center gap-4 p-4">
         {session && <CreatePost />}
-        <React.Suspense fallback={<LoadingSpinner className="h-12 w-12" />}>
+        <Suspense fallback={<LoadingSpinner className="h-12 w-12" />}>
           <Posts />
-        </React.Suspense>
+        </Suspense>
       </div>
     </HydrateClient>
   );

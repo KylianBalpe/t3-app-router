@@ -16,10 +16,13 @@ import { api } from "@/trpc/react";
 import CommentItem from "../comment/comment-item";
 import CreateComment from "../comment/comment-create";
 import { LoadingSpinner } from "@/components/icon/loading";
+import { useSession } from "next-auth/react";
 
 export default function PostDetail({ postId }: { postId: number }) {
+  const { data: session } = useSession();
+
   const { data: post } = api.post.getPostById.useQuery(postId);
-  const { data: comments, isLoading } =
+  const { data: comments, isPending: commentsLoading } =
     api.comment.getCommentsByPostId.useQuery(postId);
 
   return (
@@ -27,7 +30,7 @@ export default function PostDetail({ postId }: { postId: number }) {
       <DialogTrigger asChild>
         <Button size="sm" variant="ghost" className="rounded-sm text-sm">
           <MessageCircleMore className="mr-1 h-5 w-5" />
-          {isLoading ? <LoadingSpinner /> : <p>{comments?.length}</p>}
+          {commentsLoading ? <LoadingSpinner /> : <p>{comments?.length}</p>}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -42,10 +45,10 @@ export default function PostDetail({ postId }: { postId: number }) {
               {comments?.map((comment) => (
                 <CommentItem key={comment.id} comment={comment} />
               ))}
-              <CreateComment postId={postId} />
+              {session && <CreateComment postId={postId} />}
             </>
           ) : (
-            <CreateComment postId={postId} />
+            session && <CreateComment postId={postId} />
           )}
         </div>
       </DialogContent>

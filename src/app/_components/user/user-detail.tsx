@@ -1,8 +1,9 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { api } from "@/trpc/react";
+import EditUsername from "./user-edit";
 
 export default function UserDetail({ username }: { username: string }) {
   const [user] = api.user.getUser.useSuspenseQuery(username);
@@ -25,6 +26,7 @@ export default function UserDetail({ username }: { username: string }) {
         <h1 className="text-2xl font-bold">{user.name}</h1>
         <p className="text-muted-foreground">@{user.username}</p>
       </div>
+      <EditUsername />
     </div>
   );
 }

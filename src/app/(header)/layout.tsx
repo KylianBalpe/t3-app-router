@@ -7,8 +7,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <SessionProvider>
         <Header />
+        <main className="mx-auto max-w-xl">{children}</main>
       </SessionProvider>
-      <main className="mx-auto max-w-xl">{children}</main>
     </>
   );
 }
