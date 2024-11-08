@@ -30,7 +30,7 @@ import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 export default function EditUsername() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const trpc = api.useUtils();
   const router = useRouter();
@@ -56,11 +56,13 @@ export default function EditUsername() {
   }, [session, form, dialogOpen]);
 
   const updateUsernameMutation = api.user.updateUsername.useMutation({
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setIsSubmit(false);
       toast("Username updated");
+      await update({ username: data.username });
       form.reset();
       void trpc.user.invalidate();
+      void trpc.post.invalidate();
       router.push(`/${data.username}`);
     },
     onError: (error) => {

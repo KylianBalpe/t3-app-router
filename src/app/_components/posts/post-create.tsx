@@ -60,11 +60,11 @@ export default function CreatePost() {
                 <Textarea
                   placeholder="What do you think?"
                   rows={4}
-                  className="outline-bg-none w-full resize-none border-none p-4 shadow-none focus-visible:ring-0"
+                  className="outline-bg-none w-full resize-none border-none p-2 shadow-none focus-visible:ring-0"
                   {...field}
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="ml-2" />
             </FormItem>
           )}
         />

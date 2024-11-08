@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { Send } from "lucide-react";
 
 export default function CreateComment({ postId }: { postId: number }) {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -37,6 +38,7 @@ export default function CreateComment({ postId }: { postId: number }) {
       form.reset();
       setIsLoading(false);
       void trpc.comment.invalidate();
+      void trpc.post.invalidate();
     },
   });
 
@@ -78,8 +80,8 @@ export default function CreateComment({ postId }: { postId: number }) {
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" isLoading={isLoading}>
-          Send
+        <Button type="submit" size="sm" variant="ghost" isLoading={isLoading}>
+          <Send className="size-4" />
         </Button>
       </form>
     </Form>
