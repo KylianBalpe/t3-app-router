@@ -70,19 +70,29 @@ export default function CreateComment({ postId }: { postId: number }) {
           render={({ field }) => (
             <FormItem className="m-0 w-full space-y-0">
               <FormControl>
-                <Input
-                  placeholder="Write your comment..."
-                  className="w-full border-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                  {...field}
-                />
+                <div className="relative">
+                  <Input
+                    placeholder="Write your comment..."
+                    className="w-full border-none p-0 pr-11 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    {...field}
+                    autoComplete="off"
+                  />
+                  <div className="absolute right-0 top-0 flex h-full items-center">
+                    <Button
+                      type="submit"
+                      size="sm"
+                      variant="ghost"
+                      isLoading={isLoading}
+                    >
+                      <Send className="size-4" />
+                    </Button>
+                  </div>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" variant="ghost" isLoading={isLoading}>
-          <Send className="size-4" />
-        </Button>
       </form>
     </Form>
   );
