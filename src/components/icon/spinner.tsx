@@ -1,9 +1,15 @@
-export const Spinner = ({ className = "w-4 h-4" }: { className?: string }) => {
+import { cn } from "@/lib/utils";
+
+export const Spinner = ({
+  className,
+  ...props
+}: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      className={className}
+      className={cn("h-4 w-4", className)}
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <style>
         {`
