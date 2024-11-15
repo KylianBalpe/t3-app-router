@@ -13,8 +13,8 @@ export const Header = () => {
   const { data: session, status } = useSession();
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 w-full flex-row items-center justify-between gap-4 border-b bg-background px-4 sm:px-12">
-      <div className="mx-auto inline-flex w-full max-w-3xl justify-between px-6">
+    <header className="sticky top-0 z-40 mx-auto my-4 h-16 w-full max-w-3xl bg-background px-4">
+      <div className="inline-flex h-16 w-full items-center justify-between rounded-lg border px-4">
         <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
           <Link
             href="/"
@@ -31,7 +31,9 @@ export const Header = () => {
             </p>
           </Link>
         </nav>
-        <Triangle className="block size-8 fill-foreground sm:hidden" />
+        <Link href="/">
+          <Triangle className="block size-8 fill-foreground sm:hidden" />
+        </Link>
         <div className="inline-flex items-center space-x-2">
           {status === "authenticated" && session ? (
             <ProfileDropDown session={session} />

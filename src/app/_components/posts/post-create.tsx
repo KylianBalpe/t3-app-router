@@ -35,7 +35,7 @@ export default function CreatePost() {
   const createMutation = api.post.create.useMutation({
     onSuccess: (newPost) => {
       setIsLoading(false);
-      toast("Post created");
+      toast.success("Post created");
       form.reset();
       void trpc.post.invalidate();
 

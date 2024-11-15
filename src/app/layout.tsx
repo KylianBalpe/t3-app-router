@@ -8,6 +8,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import { HydrateClient } from "@/trpc/server";
 import SessionProvider from "@/components/provider/session-provider";
+import { CheckCircleIcon } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "T3 App",
@@ -37,7 +38,13 @@ export default function RootLayout({
             </HydrateClient>
           </ThemeProvider>
         </TRPCReactProvider>
-        <Toaster />
+        <Toaster
+          position="top-center"
+          icons={{
+            success: <CheckCircleIcon className="size-5" />,
+          }}
+          richColors
+        />
       </body>
     </html>
   );

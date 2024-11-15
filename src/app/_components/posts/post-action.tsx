@@ -41,7 +41,7 @@ export default function PostAction({ action }: { action: ActionType }) {
 
   const archiveMutation = api.post.archivePost.useMutation({
     onSuccess: (archivedPost) => {
-      toast("Post archived");
+      toast.success("Post archived");
       setIsLoading(false);
       setArchiveDialogOpen(false);
       void trpc.post.invalidate();
@@ -67,7 +67,7 @@ export default function PostAction({ action }: { action: ActionType }) {
 
   const unarchiveMutation = api.post.unarchivePost.useMutation({
     onSuccess: (unarchivedPost) => {
-      toast("Post unarchived");
+      toast.success("Post unarchived");
       setIsLoading(false);
       setArchiveDialogOpen(false);
       void trpc.post.invalidate();
@@ -87,7 +87,7 @@ export default function PostAction({ action }: { action: ActionType }) {
 
   const deleteMutation = api.post.deletePost.useMutation({
     onSuccess: (deletedPost) => {
-      toast("Post deleted");
+      toast.success("Post deleted");
       setIsLoading(false);
       setDeleteDialogOpen(false);
       void trpc.post.invalidate();

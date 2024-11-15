@@ -46,10 +46,6 @@ app
         socket.broadcast.emit("post-deleted", deletedPost);
       });
 
-      // socket.on("comment", (comment) => {
-      //   socket.broadcast.emit("comment", comment);
-      // });
-
       socket.on("disconnect", () => {
         console.log("User disconnected");
         connectedClients.delete(socket.id);

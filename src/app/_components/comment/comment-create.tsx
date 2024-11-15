@@ -34,7 +34,7 @@ export default function CreateComment({ postId }: { postId: number }) {
 
   const createCommentMutation = api.comment.create.useMutation({
     onSuccess: () => {
-      toast("Comment created");
+      toast.success("Comment created");
       form.reset();
       setIsLoading(false);
       void trpc.comment.invalidate();

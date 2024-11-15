@@ -58,7 +58,8 @@ export default function EditUsername() {
   const updateUsernameMutation = api.user.updateUsername.useMutation({
     onSuccess: async (data) => {
       setIsSubmit(false);
-      toast("Username updated");
+      toast.success("Username updated");
+
       await update({ username: data.username });
       form.reset();
       void trpc.user.invalidate();

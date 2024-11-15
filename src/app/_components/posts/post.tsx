@@ -6,10 +6,12 @@ import { api } from "@/trpc/react";
 import PostCard from "./post-card";
 import { socket } from "@/socket";
 import { type PostType } from "@/types/post-type";
+import { LoadingSpinner } from "@/components/icon/loading";
 
 export default function Posts() {
   const [posts, setPosts] = React.useState<PostType[]>([]);
-  const { data: latestPosts } = api.post.getLatest.useQuery();
+  const { data: latestPosts, isPending: postLoading } =
+    api.post.getLatest.useQuery();
 
   React.useEffect(() => {
     if (latestPosts) {
@@ -53,6 +55,11 @@ export default function Posts() {
 
   return (
     <div className="flex w-full flex-col gap-4">
+      {postLoading && (
+        <div className="flex w-full items-center justify-center">
+          <LoadingSpinner className="size-8" />
+        </div>
+      )}
       {posts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}

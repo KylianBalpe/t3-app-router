@@ -31,10 +31,12 @@ export default function ProfileDropDown({ session }: { session: Session }) {
     <AlertDialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="ml-auto">
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUser className="h-5 w-5" />
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
+          <div className="relative flex">
+            <Button variant="secondary" size="icon" className="rounded-full">
+              <CircleUser className="h-5 w-5" />
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
