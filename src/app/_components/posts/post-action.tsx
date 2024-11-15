@@ -21,6 +21,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { socket } from "@/socket";
 
 type ActionType = {
   id: number;
@@ -39,11 +40,19 @@ export default function PostAction({ action }: { action: ActionType }) {
   const trpc = api.useUtils();
 
   const archiveMutation = api.post.archivePost.useMutation({
-    onSuccess: () => {
+    onSuccess: (archivedPost) => {
       toast("Post archived");
       setIsLoading(false);
       setArchiveDialogOpen(false);
       void trpc.post.invalidate();
+
+      socket.emit("post-archived", archivedPost);
+    },
+
+    onError: (error) => {
+      toast("Failed to archive post");
+      setIsLoading(false);
+      console.error(error);
     },
   });
 
@@ -57,11 +66,13 @@ export default function PostAction({ action }: { action: ActionType }) {
   };
 
   const unarchiveMutation = api.post.unarchivePost.useMutation({
-    onSuccess: () => {
+    onSuccess: (unarchivedPost) => {
       toast("Post unarchived");
       setIsLoading(false);
       setArchiveDialogOpen(false);
       void trpc.post.invalidate();
+
+      socket.emit("post-unarchived", unarchivedPost);
     },
   });
 
@@ -75,11 +86,13 @@ export default function PostAction({ action }: { action: ActionType }) {
   };
 
   const deleteMutation = api.post.deletePost.useMutation({
-    onSuccess: () => {
+    onSuccess: (deletedPost) => {
       toast("Post deleted");
       setIsLoading(false);
       setDeleteDialogOpen(false);
       void trpc.post.invalidate();
+
+      socket.emit("post-deleted", deletedPost);
     },
   });
 

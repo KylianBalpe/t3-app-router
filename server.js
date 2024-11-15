@@ -27,21 +27,31 @@ app
       connectedClients.add(socket.id);
       io.emit("connected-clients", connectedClients.size);
 
-      console.log("A user connected");
+      console.log("User connected");
       console.log("Connected clients:", connectedClients.size);
 
-      socket.on("post", (post) => {
-        socket.send(post);
-        socket.broadcast.emit("post", post);
+      socket.on("post-new", (post) => {
+        socket.broadcast.emit("post-new", post);
       });
 
-      socket.on("comment", (comment) => {
-        socket.send(comment);
-        socket.broadcast.emit("comment", comment);
+      socket.on("post-archived", (archivedPost) => {
+        socket.broadcast.emit("post-archived", archivedPost);
       });
+
+      socket.on("post-unarchived", (unarchivedPost) => {
+        socket.broadcast.emit("post-unarchived", unarchivedPost);
+      });
+
+      socket.on("post-deleted", (deletedPost) => {
+        socket.broadcast.emit("post-deleted", deletedPost);
+      });
+
+      // socket.on("comment", (comment) => {
+      //   socket.broadcast.emit("comment", comment);
+      // });
 
       socket.on("disconnect", () => {
-        console.log("A user disconnected");
+        console.log("User disconnected");
         connectedClients.delete(socket.id);
         io.emit("connected-clients", connectedClients.size);
       });

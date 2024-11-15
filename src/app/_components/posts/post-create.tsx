@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createPostSchema } from "@/lib/schemas/post-schema";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { socket } from "@/socket";
 
 export default function CreatePost() {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -32,11 +33,13 @@ export default function CreatePost() {
   });
 
   const createMutation = api.post.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (newPost) => {
       setIsLoading(false);
       toast("Post created");
       form.reset();
       void trpc.post.invalidate();
+
+      socket.emit("post-new", newPost);
     },
   });
 

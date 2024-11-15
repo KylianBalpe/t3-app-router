@@ -6,6 +6,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { createPostSchema } from "@/lib/schemas/post-schema";
+import { type PostType } from "@/types/post-type";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -19,12 +20,44 @@ export const postRouter = createTRPCRouter({
   create: protectedProcedure
     .input(createPostSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.create({
+      const newPost = await ctx.db.post.create({
         data: {
           post: input.post,
           authorId: ctx.session.user.id,
         },
+        include: {
+          author: {
+            select: {
+              name: true,
+              username: true,
+            },
+          },
+          comments: {
+            select: {
+              id: true,
+              comment: true,
+            },
+          },
+        },
       });
+
+      const response: PostType = {
+        id: newPost.id,
+        post: newPost.post,
+        author: {
+          name: newPost.author.name,
+          username: newPost.author.username,
+        },
+        comments: newPost.comments,
+        isPublic: newPost.isPublic,
+        isArchive: newPost.isArchive,
+        createdAt: newPost.createdAt,
+        updatedAt: newPost.updatedAt,
+        deletedAt: newPost.deletedAt,
+        authorId: newPost.authorId,
+      };
+
+      return response;
     }),
 
   getLatest: publicProcedure.query(async ({ ctx }) => {
@@ -153,7 +186,7 @@ export const postRouter = createTRPCRouter({
   archivePost: protectedProcedure
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.update({
+      const archivedPost = await ctx.db.post.update({
         where: {
           id: input,
         },
@@ -161,13 +194,45 @@ export const postRouter = createTRPCRouter({
           isArchive: true,
           isPublic: false,
         },
+        include: {
+          author: {
+            select: {
+              name: true,
+              username: true,
+            },
+          },
+          comments: {
+            select: {
+              id: true,
+              comment: true,
+            },
+          },
+        },
       });
+
+      const response: PostType = {
+        id: archivedPost.id,
+        post: archivedPost.post,
+        author: {
+          name: archivedPost.author.name,
+          username: archivedPost.author.username,
+        },
+        comments: archivedPost.comments,
+        isPublic: archivedPost.isPublic,
+        isArchive: archivedPost.isArchive,
+        createdAt: archivedPost.createdAt,
+        updatedAt: archivedPost.updatedAt,
+        deletedAt: archivedPost.deletedAt,
+        authorId: archivedPost.authorId,
+      };
+
+      return response;
     }),
 
   unarchivePost: protectedProcedure
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.update({
+      const unarchivedPost = await ctx.db.post.update({
         where: {
           id: input,
         },
@@ -175,7 +240,39 @@ export const postRouter = createTRPCRouter({
           isArchive: false,
           isPublic: true,
         },
+        include: {
+          author: {
+            select: {
+              name: true,
+              username: true,
+            },
+          },
+          comments: {
+            select: {
+              id: true,
+              comment: true,
+            },
+          },
+        },
       });
+
+      const response: PostType = {
+        id: unarchivedPost.id,
+        post: unarchivedPost.post,
+        author: {
+          name: unarchivedPost.author.name,
+          username: unarchivedPost.author.username,
+        },
+        comments: unarchivedPost.comments,
+        isPublic: unarchivedPost.isPublic,
+        isArchive: unarchivedPost.isArchive,
+        createdAt: unarchivedPost.createdAt,
+        updatedAt: unarchivedPost.updatedAt,
+        deletedAt: unarchivedPost.deletedAt,
+        authorId: unarchivedPost.authorId,
+      };
+
+      return response;
     }),
 
   deletePost: protectedProcedure
