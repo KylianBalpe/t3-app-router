@@ -1,0 +1,40 @@
+"use client";
+
+import PostCardDetail from "@/app/_components/posts/post-card-detail";
+import { LoadingSpinner } from "@/components/icon/loading";
+import { buttonVariants } from "@/components/ui/button";
+import { api } from "@/trpc/react";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+
+export default function DetailPostClientPage({ id }: { id: number }) {
+  const { data: post, isPending } = api.post.getPostById.useQuery(id);
+
+  if (isPending) {
+    return (
+      <div className="flex h-16 w-full items-center justify-center">
+        <LoadingSpinner className="size-8" />
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="flex h-16 w-full items-center justify-center">
+        <p>Post not found</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex w-full flex-col items-center gap-4 p-4">
+      <div className="flex w-full flex-col items-start justify-center gap-4">
+        <Link href="/" className={buttonVariants({ variant: "outline" })}>
+          <ChevronLeft className="mr-2 size-4" />
+          Back
+        </Link>
+        <PostCardDetail post={post} />
+      </div>
+    </div>
+  );
+}
