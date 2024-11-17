@@ -15,8 +15,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const truncatedPost =
+    post.post.length > 16 ? `${post.post.substring(0, 16)}...` : post.post;
+
   return {
-    title: post.post + " - " + post.author.name,
+    title: truncatedPost + " - " + post.author.name,
     description: post.author.name + " on T3 App",
   };
 }

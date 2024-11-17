@@ -38,7 +38,14 @@ export const Header = () => {
           {status === "authenticated" && session ? (
             <ProfileDropDown session={session} />
           ) : status === "loading" ? (
-            <Button variant="outline" className="border-none p-5" isLoading />
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-none border-none outline-none"
+              isLoading
+            >
+              Sign in
+            </Button>
           ) : (
             <Link
               href="/sign-in"
