@@ -30,7 +30,12 @@ export default function SignUpPage() {
           <SignUpForm />
         </CardContent>
       </Card>
-      <Link href="/" className={buttonVariants({ variant: "link" })}>
+      <Link
+        href="/"
+        className={buttonVariants({
+          variant: "reverse",
+        })}
+      >
         Return to home
       </Link>
     </main>

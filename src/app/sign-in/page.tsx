@@ -9,12 +9,10 @@ import {
 } from "@/components/ui/card";
 
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
 import { getServerAuthSession } from "@/server/auth";
 import { redirect, RedirectType } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
-import GitHubSignInButton from "@/components/authentication/github-signin";
-import GoogleSignInButton from "@/components/authentication/google-signin";
+import SignInForm from "@/components/authentication/sign-in-form";
 
 export default async function SignInPage() {
   const session = await getServerAuthSession();
@@ -28,18 +26,20 @@ export default async function SignInPage() {
       <Card className="mx-auto w-full max-w-xl">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>Chose a provider to sign in with</CardDescription>
+          <CardDescription>
+            Enter your email below to login to your account
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <GitHubSignInButton />
-          <div className="relative flex w-full items-center justify-center py-4">
-            <Separator />
-            <span className="absolute bg-background px-2 text-sm">OR</span>
-          </div>
-          <GoogleSignInButton />
+          <SignInForm />
         </CardContent>
       </Card>
-      <Link href="/" className={buttonVariants({ variant: "link" })}>
+      <Link
+        href="/"
+        className={buttonVariants({
+          variant: "reverse",
+        })}
+      >
         Return to home
       </Link>
     </main>

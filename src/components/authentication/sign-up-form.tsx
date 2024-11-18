@@ -81,7 +81,7 @@ export default function SignUpForm() {
               <FormItem className="space-y-1">
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Last Name (Optional)" {...field} />
+                  <Input placeholder="Last Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -128,23 +128,27 @@ export default function SignUpForm() {
           )}
         />
         <CardFooter className="flex flex-col gap-2 p-0">
-          <Button type="submit" className="w-full" isLoading={isLoading}>
-            Sign Up
+          <Button
+            type="submit"
+            variant="neutral"
+            className="w-full"
+            isLoading={isLoading}
+          >
+            Sign up
           </Button>
           <div className="relative flex w-full items-center justify-center py-4">
             <Separator />
-            <span className="absolute bg-background px-2 text-sm">
+            <span className="bg-mainAccent absolute px-2 text-sm font-medium">
               Already have an account?
             </span>
           </div>
           <Link
             href="/sign-in"
             className={buttonVariants({
-              variant: "secondary",
               className: "w-full",
             })}
           >
-            Sign In
+            Sign in
           </Link>
         </CardFooter>
       </form>
