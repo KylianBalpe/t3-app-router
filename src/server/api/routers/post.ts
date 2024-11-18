@@ -6,7 +6,6 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { createPostSchema } from "@/lib/schemas/post-schema";
-import { type PostType } from "@/types/post-type";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -20,7 +19,7 @@ export const postRouter = createTRPCRouter({
   create: protectedProcedure
     .input(createPostSchema)
     .mutation(async ({ ctx, input }) => {
-      const newPost = await ctx.db.post.create({
+      return ctx.db.post.create({
         data: {
           post: input.post,
           authorId: ctx.session.user.id,
@@ -28,7 +27,8 @@ export const postRouter = createTRPCRouter({
         include: {
           author: {
             select: {
-              name: true,
+              firstName: true,
+              lastName: true,
               username: true,
             },
           },
@@ -40,24 +40,6 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
-
-      const response: PostType = {
-        id: newPost.id,
-        post: newPost.post,
-        author: {
-          name: newPost.author.name,
-          username: newPost.author.username,
-        },
-        comments: newPost.comments,
-        isPublic: newPost.isPublic,
-        isArchive: newPost.isArchive,
-        createdAt: newPost.createdAt,
-        updatedAt: newPost.updatedAt,
-        deletedAt: newPost.deletedAt,
-        authorId: newPost.authorId,
-      };
-
-      return response;
     }),
 
   getLatest: publicProcedure.query(async ({ ctx }) => {
@@ -71,7 +53,8 @@ export const postRouter = createTRPCRouter({
       include: {
         author: {
           select: {
-            name: true,
+            firstName: true,
+            lastName: true,
             username: true,
           },
         },
@@ -86,11 +69,11 @@ export const postRouter = createTRPCRouter({
   }),
 
   getPostById: publicProcedure
-    .input(z.number())
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       return ctx.db.post.findUnique({
         where: {
-          id: input,
+          id: input.id,
         },
         include: {
           comments: {
@@ -99,7 +82,8 @@ export const postRouter = createTRPCRouter({
               comment: true,
               author: {
                 select: {
-                  name: true,
+                  firstName: true,
+                  lastName: true,
                   username: true,
                 },
               },
@@ -107,7 +91,8 @@ export const postRouter = createTRPCRouter({
           },
           author: {
             select: {
-              name: true,
+              firstName: true,
+              lastName: true,
               username: true,
             },
           },
@@ -116,11 +101,11 @@ export const postRouter = createTRPCRouter({
     }),
 
   getUserPosts: publicProcedure
-    .input(z.string())
+    .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const user = await ctx.db.user.findUnique({
         where: {
-          username: input,
+          username: input.username,
         },
       });
 
@@ -141,7 +126,8 @@ export const postRouter = createTRPCRouter({
         include: {
           author: {
             select: {
-              name: true,
+              firstName: true,
+              lastName: true,
               username: true,
             },
           },
@@ -169,7 +155,8 @@ export const postRouter = createTRPCRouter({
       include: {
         author: {
           select: {
-            name: true,
+            firstName: true,
+            lastName: true,
             username: true,
           },
         },
@@ -184,11 +171,11 @@ export const postRouter = createTRPCRouter({
   }),
 
   archivePost: protectedProcedure
-    .input(z.number())
+    .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      const archivedPost = await ctx.db.post.update({
+      return ctx.db.post.update({
         where: {
-          id: input,
+          id: input.id,
         },
         data: {
           isArchive: true,
@@ -197,7 +184,8 @@ export const postRouter = createTRPCRouter({
         include: {
           author: {
             select: {
-              name: true,
+              firstName: true,
+              lastName: true,
               username: true,
             },
           },
@@ -209,32 +197,14 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
-
-      const response: PostType = {
-        id: archivedPost.id,
-        post: archivedPost.post,
-        author: {
-          name: archivedPost.author.name,
-          username: archivedPost.author.username,
-        },
-        comments: archivedPost.comments,
-        isPublic: archivedPost.isPublic,
-        isArchive: archivedPost.isArchive,
-        createdAt: archivedPost.createdAt,
-        updatedAt: archivedPost.updatedAt,
-        deletedAt: archivedPost.deletedAt,
-        authorId: archivedPost.authorId,
-      };
-
-      return response;
     }),
 
   unarchivePost: protectedProcedure
-    .input(z.number())
+    .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      const unarchivedPost = await ctx.db.post.update({
+      return ctx.db.post.update({
         where: {
-          id: input,
+          id: input.id,
         },
         data: {
           isArchive: false,
@@ -243,7 +213,8 @@ export const postRouter = createTRPCRouter({
         include: {
           author: {
             select: {
-              name: true,
+              firstName: true,
+              lastName: true,
               username: true,
             },
           },
@@ -255,32 +226,14 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
-
-      const response: PostType = {
-        id: unarchivedPost.id,
-        post: unarchivedPost.post,
-        author: {
-          name: unarchivedPost.author.name,
-          username: unarchivedPost.author.username,
-        },
-        comments: unarchivedPost.comments,
-        isPublic: unarchivedPost.isPublic,
-        isArchive: unarchivedPost.isArchive,
-        createdAt: unarchivedPost.createdAt,
-        updatedAt: unarchivedPost.updatedAt,
-        deletedAt: unarchivedPost.deletedAt,
-        authorId: unarchivedPost.authorId,
-      };
-
-      return response;
     }),
 
   deletePost: protectedProcedure
-    .input(z.number())
+    .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.post.update({
         where: {
-          id: input,
+          id: input.id,
         },
         data: {
           deletedAt: new Date(),
