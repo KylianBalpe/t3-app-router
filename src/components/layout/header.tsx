@@ -35,6 +35,7 @@ export const Header = () => {
           <Triangle className="block size-8 fill-foreground sm:hidden" />
         </Link>
         <div className="inline-flex items-center space-x-2">
+          <ThemeToggle />
           {status === "authenticated" && session ? (
             <ProfileDropDown session={session} />
           ) : status === "loading" ? (
@@ -47,14 +48,21 @@ export const Header = () => {
               Sign in
             </Button>
           ) : (
-            <Link
-              href="/sign-in"
-              className={buttonVariants({ variant: "outline", size: "sm" })}
-            >
-              Sign in
-            </Link>
+            <>
+              <Link
+                href="/sign-in"
+                className={buttonVariants({ variant: "outline", size: "sm" })}
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/sign-up"
+                className={buttonVariants({ variant: "outline", size: "sm" })}
+              >
+                Sign up
+              </Link>
+            </>
           )}
-          <ThemeToggle />
         </div>
       </div>
     </header>

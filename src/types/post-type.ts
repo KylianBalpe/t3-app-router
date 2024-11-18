@@ -1,7 +1,7 @@
 export type PostType = {
   author: {
     firstName: string;
-    lastName: string | null;
+    lastName: string;
     username: string;
   };
   comments: {

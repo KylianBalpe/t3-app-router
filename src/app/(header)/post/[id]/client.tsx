@@ -8,7 +8,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function DetailPostClientPage({ id }: { id: number }) {
-  const { data: post, isPending } = api.post.getPostById.useQuery(id);
+  const { data: post, isPending } = api.post.getPostById.useQuery({ id: id });
 
   if (isPending) {
     return (

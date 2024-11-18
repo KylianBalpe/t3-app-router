@@ -7,7 +7,7 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await api.post.getPostById(Number(params.id));
+  const post = await api.post.getPostById({ id: Number(params.id) });
 
   if (!post) {
     return {
@@ -19,8 +19,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     post.post.length > 16 ? `${post.post.substring(0, 16)}...` : post.post;
 
   return {
-    title: truncatedPost + " - " + post.author.name,
-    description: post.author.name + " on T3 App",
+    title:
+      truncatedPost +
+      " - " +
+      post.author.firstName +
+      " " +
+      post.author.lastName,
+    description:
+      post.author.firstName + " " + post.author.lastName + " on T3 App",
   };
 }
 

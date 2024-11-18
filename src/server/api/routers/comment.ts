@@ -30,8 +30,8 @@ export const commentRouter = createTRPCRouter({
         include: {
           author: {
             select: {
-              name: true,
-              username: true,
+              firstName: true,
+              lastName: true,
             },
           },
         },

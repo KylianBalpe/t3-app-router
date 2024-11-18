@@ -12,7 +12,7 @@ import React from "react";
 import PostAction from "./post-action";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { type PostType } from "./post-type";
+import { type PostType } from "@/types/post-type";
 // import PostDetail from "./post-detail";
 import { Button } from "@/components/ui/button";
 import { MessageCircleMore } from "lucide-react";
@@ -27,11 +27,15 @@ export default function PostCardDetail({ post }: { post: PostType }) {
   const { data: comments, isPending } =
     api.comment.getCommentsByPostId.useQuery(post.id);
 
+  console.log(comments);
+
+  const authorName = post.author.firstName + " " + post.author.lastName;
+
   return (
     <Card className="relative w-full rounded-lg shadow-sm">
       <CardHeader className="space-y-1">
         <Link href={`/${post.author.username}`} className="hover:underline">
-          <CardTitle>{post.author.name}</CardTitle>
+          <CardTitle>{authorName}</CardTitle>
         </Link>
         <CardDescription>@{post.author.username}</CardDescription>
       </CardHeader>
