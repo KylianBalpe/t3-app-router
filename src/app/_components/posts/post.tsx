@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 import PostCard from "./post-card";
 import { socket } from "@/socket";
 import { type PostType } from "@/types/post-type";
-import { LoadingSpinner } from "@/components/icon/loading";
+import { Spinner } from "@/components/icon/spinner";
 
 export default function Posts() {
   const [posts, setPosts] = React.useState<PostType[]>([]);
@@ -57,7 +57,7 @@ export default function Posts() {
     <div className="flex w-full flex-col gap-4">
       {postLoading && (
         <div className="flex w-full items-center justify-center">
-          <LoadingSpinner className="size-8" />
+          <Spinner className="size-8" />
         </div>
       )}
       {posts.map((post) => (

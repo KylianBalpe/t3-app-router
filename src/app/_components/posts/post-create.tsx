@@ -52,7 +52,7 @@ export default function CreatePost() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-full flex-col items-end space-y-1"
+        className="flex w-full flex-col items-end space-y-3"
       >
         <FormField
           control={form.control}
@@ -63,7 +63,7 @@ export default function CreatePost() {
                 <Textarea
                   placeholder="What do you think?"
                   rows={4}
-                  className="outline-bg-none w-full resize-none border-none p-2 shadow-none focus-visible:ring-0"
+                  className="w-full resize-none p-4"
                   {...field}
                 />
               </FormControl>

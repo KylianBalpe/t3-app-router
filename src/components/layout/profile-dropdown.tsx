@@ -27,12 +27,13 @@ import { type Session } from "next-auth";
 import Link from "next/link";
 
 export default function ProfileDropDown({ session }: { session: Session }) {
+  const name = session.user.firstName + " " + session.user.lastName;
   return (
     <AlertDialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="ml-auto">
           <div className="relative flex">
-            <Button variant="secondary" size="icon" className="rounded-full">
+            <Button size="icon" className="rounded-full">
               <CircleUser className="h-5 w-5" />
               <span className="sr-only">Toggle user menu</span>
             </Button>
@@ -42,7 +43,7 @@ export default function ProfileDropDown({ session }: { session: Session }) {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link href={`/${session.user.username}`}>{session.user.name}</Link>
+            <Link href={`/${session.user.username}`}>{name}</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -51,7 +52,7 @@ export default function ProfileDropDown({ session }: { session: Session }) {
           </AlertDialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
-      <AlertDialogContent className="w-full max-w-md space-y-6">
+      <AlertDialogContent className="w-full max-w-md gap-3">
         <AlertDialogHeader>
           <AlertDialogTitle className="p-2 text-center text-3xl font-bold">
             Are you sure you want to sign out?
@@ -61,9 +62,7 @@ export default function ProfileDropDown({ session }: { session: Session }) {
         <AlertDialogFooter className="flex flex-row items-center justify-center sm:justify-center">
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction asChild>
-            <Button onClick={() => signOut()} variant="destructive">
-              Sign out
-            </Button>
+            <Button onClick={() => signOut()}>Sign out</Button>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

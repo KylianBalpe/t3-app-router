@@ -21,21 +21,23 @@ import { useSession } from "next-auth/react";
 export default function PostDetail({ postId }: { postId: number }) {
   const { data: session } = useSession();
 
-  const { data: post } = api.post.getPostById.useQuery(postId);
+  const { data: post } = api.post.getPostById.useQuery({ id: postId });
   const { data: comments, isPending: commentsLoading } =
     api.comment.getCommentsByPostId.useQuery(postId);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost" className="rounded-sm text-sm">
+        <Button size="sm" className="rounded-sm text-sm">
           <MessageCircleMore className="mr-1 h-5 w-5" />
           {commentsLoading ? <LoadingSpinner /> : <p>{comments?.length}</p>}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{post?.author.name}</DialogTitle>
+          <DialogTitle>
+            {post?.author.firstName + " " + post?.author.lastName}
+          </DialogTitle>
           <DialogDescription>{post?.author.username}</DialogDescription>
         </DialogHeader>
         <div className="p-4 pt-0">{post?.post}</div>

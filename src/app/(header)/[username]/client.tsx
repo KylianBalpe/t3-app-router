@@ -13,17 +13,19 @@ export default function UserPageClient({ username }: { username: string }) {
   const { data: user, isPending } = api.user.getUser.useQuery(username);
 
   return (
-    <div className="flex w-full flex-col items-center gap-4 p-4">
+    <div className="flex w-full flex-col items-center gap-6 p-4">
       {status === "loading" || (isPending && <UserSkeleton />)}
       {user && (
         <div className="flex flex-col items-center gap-4">
           <Avatar className="h-36 w-36">
-            <AvatarImage src={user.image ?? "https://github.com/shadcn.png"} />
-            <AvatarFallback>{user.name}</AvatarFallback>
+            <AvatarImage src={"https://github.com/shadcn.png"} />
+            <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="flex flex-col items-center gap-1">
-            <h1 className="text-2xl font-bold">{user.name}</h1>
-            <p className="text-muted-foreground">@{user.username}</p>
+          <div className="flex flex-col items-center gap-0">
+            <h1 className="text-2xl font-bold">
+              {user.firstName + " " + user.lastName}
+            </h1>
+            <p className="font-medium">@{user.username}</p>
           </div>
           {user.username === session?.user?.username && <EditUsername />}
         </div>

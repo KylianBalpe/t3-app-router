@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -9,6 +8,7 @@ import { ThemeProvider } from "@/components/provider/theme-provider";
 import { HydrateClient } from "@/trpc/server";
 import SessionProvider from "@/components/provider/session-provider";
 import { CheckCircleIcon } from "lucide-react";
+import { Archivo } from "next/font/google";
 
 export const metadata: Metadata = {
   title: {
@@ -19,15 +19,16 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
+const archivo = Archivo({
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${GeistSans.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${archivo.className}`} suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
           <ThemeProvider

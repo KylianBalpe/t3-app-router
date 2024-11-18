@@ -73,7 +73,7 @@ export default function CreateComment({ postId }: { postId: number }) {
                 <div className="relative">
                   <Input
                     placeholder="Write your comment..."
-                    className="w-full border-none p-0 pr-11 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    className="w-full py-4 pr-11"
                     {...field}
                     autoComplete="off"
                   />
@@ -81,7 +81,8 @@ export default function CreateComment({ postId }: { postId: number }) {
                     <Button
                       type="submit"
                       size="sm"
-                      variant="ghost"
+                      variant="noShadow"
+                      className="border-none bg-transparent"
                       isLoading={isLoading}
                     >
                       <Send className="size-4" />

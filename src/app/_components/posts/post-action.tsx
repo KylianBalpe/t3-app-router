@@ -59,7 +59,7 @@ export default function PostAction({ action }: { action: ActionType }) {
   const handleArchive = async (id: number) => {
     setIsLoading(true);
     try {
-      await archiveMutation.mutateAsync(id);
+      await archiveMutation.mutateAsync({ id: id });
     } catch (error) {
       console.error(error);
     }
@@ -79,7 +79,7 @@ export default function PostAction({ action }: { action: ActionType }) {
   const handleUnarchive = async (id: number) => {
     setIsLoading(true);
     try {
-      await unarchiveMutation.mutateAsync(id);
+      await unarchiveMutation.mutateAsync({ id: id });
     } catch (error) {
       console.error(error);
     }
@@ -98,14 +98,18 @@ export default function PostAction({ action }: { action: ActionType }) {
 
   const handleDelete = async (id: number) => {
     setIsLoading(true);
-    await deleteMutation.mutateAsync(id);
+    await deleteMutation.mutateAsync({ id: id });
   };
 
   return (
     <>
       <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost">
+          <Button
+            size="icon"
+            variant="noShadow"
+            className="text-darkText dark:text-text bg-secondaryBlack dark:bg-white"
+          >
             <MoreHorizontal />
           </Button>
         </DropdownMenuTrigger>

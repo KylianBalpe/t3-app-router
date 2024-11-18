@@ -1,7 +1,7 @@
 "use client";
 
 import PostCardDetail from "@/app/_components/posts/post-card-detail";
-import { LoadingSpinner } from "@/components/icon/loading";
+import { Spinner } from "@/components/icon/spinner";
 import { buttonVariants } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { ChevronLeft } from "lucide-react";
@@ -13,7 +13,7 @@ export default function DetailPostClientPage({ id }: { id: number }) {
   if (isPending) {
     return (
       <div className="flex h-16 w-full items-center justify-center">
-        <LoadingSpinner className="size-8" />
+        <Spinner className="size-8" />
       </div>
     );
   }
@@ -29,7 +29,7 @@ export default function DetailPostClientPage({ id }: { id: number }) {
   return (
     <div className="flex w-full flex-col items-center gap-4 p-4">
       <div className="flex w-full flex-col items-start justify-center gap-4">
-        <Link href="/" className={buttonVariants({ variant: "outline" })}>
+        <Link href="/" className={buttonVariants({ variant: "neutral" })}>
           <ChevronLeft className="mr-2 size-4" />
           Back
         </Link>

@@ -12,36 +12,44 @@ import React from "react";
 import PostAction from "./post-action";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { type PostType } from "./post-type";
 // import PostDetail from "./post-detail";
 import { buttonVariants } from "@/components/ui/button";
 import { MessageCircleMore } from "lucide-react";
+import { PostType } from "@/types/post-type";
 
 export default function PostCard({ post }: { post: PostType }) {
   const { data: session } = useSession();
 
+  const authorName = post.author.firstName + " " + post.author.lastName;
+
   return (
-    <Card className="relative w-full rounded-lg shadow-sm">
-      <CardHeader className="space-y-1">
+    <Card className="dark:text-darkText dark:bg-secondaryBlack relative w-full bg-white">
+      <CardHeader className="space-y-0">
         <Link href={`/${post.author.username}`} className="hover:underline">
-          <CardTitle>{post.author.name}</CardTitle>
+          <CardTitle>{authorName}</CardTitle>
         </Link>
-        <CardDescription>@{post.author.username}</CardDescription>
+        <CardDescription className="text-text/80 dark:text-darkText !mt-1">
+          @{post.author.username}
+        </CardDescription>
       </CardHeader>
       <Link href={`/post/${post.id}`} className="cursor-default">
         <CardContent>
-          <p>{post.post}</p>
+          <p className="font-medium">{post.post}</p>
         </CardContent>
       </Link>
       {session?.user.id === post.authorId && (
-        <div className="absolute right-4 top-4">
+        <div className="absolute right-6 top-6">
           <PostAction action={post} />
         </div>
       )}
-      <CardFooter className="flex flex-row items-center justify-start p-2">
+      <CardFooter className="flex flex-row items-center justify-start">
         <Link
           href={`/post/${post.id}`}
-          className={buttonVariants({ variant: "ghost" })}
+          className={buttonVariants({
+            variant: "noShadow",
+            className:
+              "dark:text-text !text-darkText bg-secondaryBlack cursor-default dark:bg-white",
+          })}
         >
           <MessageCircleMore className="mr-1 h-5 w-5" />
           <p>{post.comments.length}</p>

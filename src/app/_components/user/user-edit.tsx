@@ -86,7 +86,7 @@ export default function EditUsername() {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="neutral" size="sm">
           Change Username
         </Button>
       </DialogTrigger>

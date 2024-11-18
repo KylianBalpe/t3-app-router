@@ -1,6 +1,3 @@
-"use client";
-
-import * as React from "react";
 import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import {
@@ -12,9 +9,11 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { cn } from "@/lib/utils";
+import * as React from "react";
+
 import { Label } from "@/components/ui/label";
-import { CircleAlert } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 const Form = FormProvider;
 
@@ -96,7 +95,7 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-destructive", className)}
+      className={cn(error && "font-base text-red-500", className)}
       htmlFor={formItemId}
       {...props}
     />
@@ -137,7 +136,10 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-[0.8rem] text-muted-foreground", className)}
+      className={cn(
+        "font-base text-text dark:text-darkText text-sm",
+        className,
+      )}
       {...props}
     />
   );
@@ -159,13 +161,9 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn(
-        "inline-flex items-center text-[0.8rem] font-medium text-destructive",
-        className,
-      )}
+      className={cn("font-base text-sm text-red-500", className)}
       {...props}
     >
-      <CircleAlert className="mr-1 size-4" />
       {body}
     </p>
   );

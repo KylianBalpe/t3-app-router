@@ -20,6 +20,8 @@ import { api } from "@/trpc/react";
 import CommentItem from "../comment/comment-item";
 import CreateComment from "../comment/comment-create";
 import { LoadingSpinner } from "@/components/icon/loading";
+import { Spinner } from "@/components/icon/spinner";
+import { cn } from "@/lib/utils";
 
 export default function PostCardDetail({ post }: { post: PostType }) {
   const { data: session } = useSession();
@@ -27,54 +29,58 @@ export default function PostCardDetail({ post }: { post: PostType }) {
   const { data: comments, isPending } =
     api.comment.getCommentsByPostId.useQuery(post.id);
 
-  console.log(comments);
-
   const authorName = post.author.firstName + " " + post.author.lastName;
 
   return (
-    <Card className="relative w-full rounded-lg shadow-sm">
-      <CardHeader className="space-y-1">
+    <Card className="dark:text-darkText dark:bg-secondaryBlack relative w-full bg-white">
+      <CardHeader className="space-y-0">
         <Link href={`/${post.author.username}`} className="hover:underline">
           <CardTitle>{authorName}</CardTitle>
         </Link>
-        <CardDescription>@{post.author.username}</CardDescription>
+        <CardDescription className="text-text/80 dark:text-darkText !mt-1">
+          @{post.author.username}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <p>{post.post}</p>
+        <p className="font-medium">{post.post}</p>
       </CardContent>
       {session?.user.id === post.authorId && (
-        <div className="absolute right-4 top-4">
+        <div className="absolute right-6 top-6">
           <PostAction action={post} />
         </div>
       )}
-      <CardFooter className="flex flex-row items-center justify-end p-4 py-2">
+      <CardFooter className="flex flex-row items-center justify-end">
         <Button
           size="sm"
-          variant="ghost"
-          className="cursor-default hover:bg-transparent"
+          variant="noShadow"
+          className="dark:text-text bg-secondaryBlack text-darkText cursor-default dark:bg-white"
           type="button"
         >
           <MessageCircleMore className="mr-1 h-5 w-5" />
           <p>{post.comments.length} comments</p>
         </Button>
       </CardFooter>
-      <div className="flex w-full flex-col gap-1 border-t p-6">
-        {isPending && (
-          <div className="flex w-full items-center justify-center">
-            <LoadingSpinner className="size-6" />
-          </div>
-        )}
-        {!isPending && comments!.length ? (
-          <>
+      {isPending && (
+        <div className="flex w-full flex-col items-center justify-center gap-4 border-t p-6">
+          <Spinner />
+        </div>
+      )}
+      {comments && (
+        <div
+          className={cn(
+            "flex w-full flex-col gap-4 border-t p-6",
+            comments.length < 1 && "hidden",
+            session && "flex",
+          )}
+        >
+          <div className={cn("flex flex-col", comments.length < 1 && "hidden")}>
             {comments?.map((comment) => (
               <CommentItem key={comment.id} comment={comment} />
             ))}
-            {session && <CreateComment postId={post.id} />}
-          </>
-        ) : (
-          session && <CreateComment postId={post.id} />
-        )}
-      </div>
+          </div>
+          {session && <CreateComment postId={post.id} />}
+        </div>
+      )}
     </Card>
   );
 }

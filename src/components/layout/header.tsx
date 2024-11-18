@@ -13,52 +13,44 @@ export const Header = () => {
   const { data: session, status } = useSession();
 
   return (
-    <header className="sticky top-0 z-40 mx-auto my-4 h-16 w-full max-w-3xl bg-background px-4">
-      <div className="inline-flex h-16 w-full items-center justify-between rounded-lg border px-4">
+    <header className="sticky top-0 z-40 mx-auto mb-4 h-16 w-full max-w-3xl px-4 pt-4">
+      <div className="bg-mainAccent dark:border-darkBorder shadow-light dark:shadow-dark rounded-base inline-flex h-16 w-full items-center justify-between border-2 border-border px-6">
         <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
           <Link
             href="/"
             className={buttonVariants({
               size: "icon",
-              variant: "ghost",
+              variant: "noShadow",
               className:
-                "inline-flex w-full items-center p-0 hover:bg-transparent",
+                "inline-flex w-full items-center border-none bg-transparent p-0 hover:bg-transparent",
             })}
           >
-            <Triangle className="mr-2 size-5 fill-foreground" />
-            <p className="from-primary from-50% to-primary/40 bg-clip-text text-xl font-semibold dark:bg-gradient-to-b dark:text-transparent">
-              T3 App
-            </p>
+            <Triangle className="fill-text mr-2 size-5" />
+            <p className="text-text text-xl font-semibold">T3 App</p>
           </Link>
         </nav>
         <Link href="/">
-          <Triangle className="block size-8 fill-foreground sm:hidden" />
+          <Triangle className="fill-text size-8 sm:hidden" />
         </Link>
         <div className="inline-flex items-center space-x-2">
           <ThemeToggle />
           {status === "authenticated" && session ? (
             <ProfileDropDown session={session} />
           ) : status === "loading" ? (
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-none border-none outline-none"
-              isLoading
-            >
-              Sign in
-            </Button>
+            <>
+              <Button size="sm" isLoading>
+                Sign in
+              </Button>
+              <Button size="sm" isLoading>
+                Sign up
+              </Button>
+            </>
           ) : (
             <>
-              <Link
-                href="/sign-in"
-                className={buttonVariants({ variant: "outline", size: "sm" })}
-              >
+              <Link href="/sign-in" className={buttonVariants({ size: "sm" })}>
                 Sign in
               </Link>
-              <Link
-                href="/sign-up"
-                className={buttonVariants({ variant: "outline", size: "sm" })}
-              >
+              <Link href="/sign-up" className={buttonVariants({ size: "sm" })}>
                 Sign up
               </Link>
             </>

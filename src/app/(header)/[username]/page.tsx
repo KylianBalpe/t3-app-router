@@ -18,8 +18,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: user.name,
-    description: user.name + " Profile on T3 App",
+    title: user.firstName + " " + user.lastName,
+    description: user.firstName + " " + user.lastName + " Profile on T3 App",
   };
 }
 

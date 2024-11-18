@@ -11,9 +11,9 @@ interface CommentProp extends CommentType {
 export default function CommentItem({ comment }: { comment: CommentProp }) {
   const authorName = comment.author.firstName + " " + comment.author.lastName;
   return (
-    <div key={comment.id} className="inline-flex items-center gap-1 text-sm">
+    <div key={comment.id} className="inline-flex items-center gap-1 text-base">
       <p className="font-bold">{authorName}</p>
-      <p>{comment.comment}</p>
+      <p className="font-medium">{comment.comment}</p>
     </div>
   );
 }
