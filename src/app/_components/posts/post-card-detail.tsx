@@ -19,7 +19,6 @@ import { MessageCircleMore } from "lucide-react";
 import { api } from "@/trpc/react";
 import CommentItem from "../comment/comment-item";
 import CreateComment from "../comment/comment-create";
-import { LoadingSpinner } from "@/components/icon/loading";
 import { Spinner } from "@/components/icon/spinner";
 import { cn } from "@/lib/utils";
 
