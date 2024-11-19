@@ -6,8 +6,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        main: "#FFDC58",
-        mainAccent: "#ffc800", // not needed for shadcn components
+        primary: "#FFDC58",
+        accent: "#ffc800",
+        success: "#A3E636",
+        destructive: "#ff3333",
+        info: "#88aaee",
         overlay: "rgba(0,0,0,0.8)", // background color overlay for alert dialogs, modals, etc.
 
         // light mode

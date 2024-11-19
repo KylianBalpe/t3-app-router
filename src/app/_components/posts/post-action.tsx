@@ -50,7 +50,7 @@ export default function PostAction({ action }: { action: ActionType }) {
     },
 
     onError: (error) => {
-      toast("Failed to archive post");
+      toast.error("Failed to archive post");
       setIsLoading(false);
       console.error(error);
     },
@@ -74,6 +74,11 @@ export default function PostAction({ action }: { action: ActionType }) {
 
       socket.emit("post-unarchived", unarchivedPost);
     },
+    onError: (error) => {
+      toast.error("Failed to unarchive post");
+      setIsLoading(false);
+      console.error(error);
+    },
   });
 
   const handleUnarchive = async (id: number) => {
@@ -94,6 +99,11 @@ export default function PostAction({ action }: { action: ActionType }) {
 
       socket.emit("post-deleted", deletedPost);
     },
+    onError: (error) => {
+      toast.error("Failed to delete post");
+      setIsLoading(false);
+      console.error(error);
+    },
   });
 
   const handleDelete = async (id: number) => {
@@ -108,7 +118,7 @@ export default function PostAction({ action }: { action: ActionType }) {
           <Button
             size="icon"
             variant="noShadow"
-            className="text-darkText dark:text-text bg-secondaryBlack dark:bg-white"
+            className="bg-secondaryBlack text-darkText dark:bg-white dark:text-text"
           >
             <MoreHorizontal />
           </Button>

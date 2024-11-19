@@ -41,6 +41,11 @@ export default function CreatePost() {
 
       socket.emit("post-new", newPost);
     },
+    onError: (error) => {
+      setIsLoading(false);
+      toast.error("Failed to create post");
+      console.error(error);
+    },
   });
 
   async function onSubmit(values: z.infer<typeof createPostSchema>) {

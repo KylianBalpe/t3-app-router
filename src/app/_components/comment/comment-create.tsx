@@ -40,6 +40,11 @@ export default function CreateComment({ postId }: { postId: number }) {
       void trpc.comment.invalidate();
       void trpc.post.invalidate();
     },
+    onError: (error) => {
+      toast.error("Failed to create comment");
+      setIsLoading(false);
+      console.error(error);
+    },
   });
 
   async function onSubmit(values: z.infer<typeof createCommentSchema>) {
@@ -73,7 +78,7 @@ export default function CreateComment({ postId }: { postId: number }) {
                 <div className="relative">
                   <Input
                     placeholder="Write your comment..."
-                    className="w-full py-4 pr-11"
+                    className="w-full !bg-white py-4 pr-11 !text-text placeholder:text-text/60"
                     {...field}
                     autoComplete="off"
                   />

@@ -101,7 +101,7 @@ export default function SignInForm() {
           </Button>
           <div className="relative flex w-full items-center justify-center py-4">
             <Separator />
-            <span className="bg-mainAccent absolute px-2 text-sm">
+            <span className="bg-accent absolute px-2 text-sm">
               Don&apos;t have an account?
             </span>
           </div>

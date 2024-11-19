@@ -14,7 +14,7 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-40 mx-auto mb-4 h-16 w-full max-w-3xl px-4 pt-4">
-      <div className="bg-mainAccent dark:border-darkBorder shadow-light dark:shadow-dark rounded-base inline-flex h-16 w-full items-center justify-between border-2 border-border px-6">
+      <div className="bg-accent inline-flex h-16 w-full items-center justify-between rounded-base border-2 border-border px-6 shadow-light dark:border-darkBorder dark:shadow-dark">
         <nav className="hidden flex-col text-lg font-medium md:flex md:flex-row md:items-center md:text-sm">
           <Link
             href="/"
@@ -25,12 +25,12 @@ export const Header = () => {
                 "inline-flex w-full items-center border-none bg-transparent p-0 hover:bg-transparent",
             })}
           >
-            <Triangle className="fill-text mr-2 size-5" />
-            <p className="text-text text-xl font-semibold">T3 App</p>
+            <Triangle className="mr-2 size-5 fill-text" />
+            <p className="text-xl font-semibold text-text">T3 App</p>
           </Link>
         </nav>
         <Link href="/">
-          <Triangle className="fill-text size-8 sm:hidden" />
+          <Triangle className="size-8 fill-text sm:hidden" />
         </Link>
         <div className="inline-flex items-center space-x-2">
           <ThemeToggle />

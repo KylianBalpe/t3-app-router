@@ -138,7 +138,7 @@ export default function SignUpForm() {
           </Button>
           <div className="relative flex w-full items-center justify-center py-4">
             <Separator />
-            <span className="bg-mainAccent absolute px-2 text-sm font-medium">
+            <span className="bg-accent absolute px-2 text-sm font-medium">
               Already have an account?
             </span>
           </div>

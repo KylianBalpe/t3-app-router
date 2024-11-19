@@ -15,7 +15,7 @@ import { useSession } from "next-auth/react";
 // import PostDetail from "./post-detail";
 import { buttonVariants } from "@/components/ui/button";
 import { MessageCircleMore } from "lucide-react";
-import { PostType } from "@/types/post-type";
+import { type PostType } from "@/types/post-type";
 
 export default function PostCard({ post }: { post: PostType }) {
   const { data: session } = useSession();
@@ -23,12 +23,12 @@ export default function PostCard({ post }: { post: PostType }) {
   const authorName = post.author.firstName + " " + post.author.lastName;
 
   return (
-    <Card className="dark:text-darkText dark:bg-secondaryBlack relative w-full bg-white">
+    <Card className="relative w-full bg-white dark:bg-secondaryBlack dark:text-darkText">
       <CardHeader className="space-y-0">
         <Link href={`/${post.author.username}`} className="hover:underline">
           <CardTitle>{authorName}</CardTitle>
         </Link>
-        <CardDescription className="text-text/80 dark:text-darkText !mt-1">
+        <CardDescription className="!mt-1 text-text/80 dark:text-darkText">
           @{post.author.username}
         </CardDescription>
       </CardHeader>
@@ -48,7 +48,7 @@ export default function PostCard({ post }: { post: PostType }) {
           className={buttonVariants({
             variant: "noShadow",
             className:
-              "dark:text-text !text-darkText bg-secondaryBlack cursor-default dark:bg-white",
+              "cursor-default bg-secondaryBlack !text-darkText dark:bg-white dark:!text-text",
           })}
         >
           <MessageCircleMore className="mr-1 h-5 w-5" />

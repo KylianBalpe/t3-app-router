@@ -68,7 +68,7 @@ export default function EditUsername() {
     },
     onError: (error) => {
       setIsSubmit(false);
-      toast(error.message);
+      toast.error(error.message);
     },
   });
 

@@ -7,7 +7,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import { HydrateClient } from "@/trpc/server";
 import SessionProvider from "@/components/provider/session-provider";
-import { CheckCircleIcon } from "lucide-react";
+import { AlertCircleIcon, CheckCircleIcon } from "lucide-react";
 import { Archivo } from "next/font/google";
 
 export const metadata: Metadata = {
@@ -45,9 +45,19 @@ export default function RootLayout({
         <Toaster
           position="top-center"
           icons={{
-            success: <CheckCircleIcon className="size-5" />,
+            success: <CheckCircleIcon className="size-6" />,
+            error: <AlertCircleIcon className="size-6" />,
           }}
-          richColors
+          toastOptions={{
+            unstyled: false,
+            classNames: {
+              title: "font-semibold",
+              success:
+                "bg-success text-text border-base text-lg border-2 border-border gap-4 shadow-dark",
+              error:
+                "bg-destructive text-text border-base text-lg border-2 border-border gap-4 shadow-dark",
+            },
+          }}
         />
       </body>
     </html>
