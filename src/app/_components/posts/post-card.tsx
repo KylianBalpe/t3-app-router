@@ -34,7 +34,7 @@ export default function PostCard({ post }: { post: PostType }) {
       </CardHeader>
       <Link href={`/post/${post.id}`} className="cursor-default">
         <CardContent>
-          <p className="font-medium">{post.post}</p>
+          <p className="whitespace-pre-line font-medium">{post.post}</p>
         </CardContent>
       </Link>
       {session?.user.id === post.authorId && (

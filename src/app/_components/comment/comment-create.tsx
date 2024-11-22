@@ -78,11 +78,11 @@ export default function CreateComment({ postId }: { postId: number }) {
                 <div className="relative">
                   <Input
                     placeholder="Write your comment..."
-                    className="w-full !bg-white py-4 pr-11 !text-text placeholder:text-text/60"
+                    className="h-full min-h-0 w-full resize-none !bg-white pr-11 !text-text placeholder:!text-text/60"
                     {...field}
                     autoComplete="off"
                   />
-                  <div className="absolute right-0 top-0 flex h-full items-center">
+                  <div className="absolute right-0 top-0 flex items-center">
                     <Button
                       type="submit"
                       size="sm"

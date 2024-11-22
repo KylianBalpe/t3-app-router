@@ -31,17 +31,17 @@ export default function PostCardDetail({ post }: { post: PostType }) {
   const authorName = post.author.firstName + " " + post.author.lastName;
 
   return (
-    <Card className="dark:text-darkText dark:bg-secondaryBlack relative w-full bg-white">
+    <Card className="relative w-full bg-white dark:bg-secondaryBlack dark:text-darkText">
       <CardHeader className="space-y-0">
         <Link href={`/${post.author.username}`} className="hover:underline">
           <CardTitle>{authorName}</CardTitle>
         </Link>
-        <CardDescription className="text-text/80 dark:text-darkText !mt-1">
+        <CardDescription className="!mt-1 text-text/80 dark:text-darkText">
           @{post.author.username}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="font-medium">{post.post}</p>
+        <p className="whitespace-pre-line font-medium">{post.post}</p>
       </CardContent>
       {session?.user.id === post.authorId && (
         <div className="absolute right-6 top-6">
@@ -52,7 +52,7 @@ export default function PostCardDetail({ post }: { post: PostType }) {
         <Button
           size="sm"
           variant="noShadow"
-          className="dark:text-text bg-secondaryBlack text-darkText cursor-default dark:bg-white"
+          className="cursor-default bg-secondaryBlack text-darkText dark:bg-white dark:text-text"
           type="button"
         >
           <MessageCircleMore className="mr-1 h-5 w-5" />
@@ -72,7 +72,12 @@ export default function PostCardDetail({ post }: { post: PostType }) {
             session && "flex",
           )}
         >
-          <div className={cn("flex flex-col", comments.length < 1 && "hidden")}>
+          <div
+            className={cn(
+              "flex flex-col gap-2",
+              comments.length < 1 && "hidden",
+            )}
+          >
             {comments?.map((comment) => (
               <CommentItem key={comment.id} comment={comment} />
             ))}

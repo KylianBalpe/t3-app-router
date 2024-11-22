@@ -24,5 +24,9 @@ export const signInSchema = z.object({
 });
 
 export const editUsernameSchema = z.object({
-  username: z.string().min(3).max(100),
+  username: z
+    .string()
+    .min(3)
+    .max(100)
+    .refine((s) => !s.includes(" "), "Username cannot contain spaces"),
 });
