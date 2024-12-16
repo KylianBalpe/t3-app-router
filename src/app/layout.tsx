@@ -17,6 +17,19 @@ export const metadata: Metadata = {
   },
   description: "T3 App",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  openGraph: {
+    title: "T3 App",
+    description: "T3 App",
+    siteName: "T3 App",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "T3 App",
+      },
+    ],
+  },
 };
 
 const archivo = Archivo({

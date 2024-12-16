@@ -63,6 +63,11 @@ export default function Posts() {
       {posts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}
+      {posts.length === 0 && (
+        <div className="flex h-40 w-full items-center justify-center text-xl font-medium">
+          <p>No post yet</p>
+        </div>
+      )}
     </div>
   );
 }
