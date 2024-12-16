@@ -1,0 +1,28 @@
+name: T3 App # workflow name
+
+on:
+  push:
+    branches: # similar to "only" in GitLab
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04 # similar to "image" in GitLab
+    steps:
+      - run: echo "This is a build step" # similar to "script" in GitLab
+
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "This is a test step"
+
+  integration:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "This is an integration step"
+      - run: exit 1
+
+  prod:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "This is a deploy step"
