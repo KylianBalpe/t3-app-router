@@ -70,7 +70,7 @@ else
 fi
 
 # For external tools (like Drizzle Studio)
-DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DB"
+DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432/$POSTGRES_DB"
 
 # Create the .env file inside the app directory (~/myapp/.env)
 echo "POSTGRES_USER=$POSTGRES_USER" > "$APP_DIR/.env"
@@ -145,10 +145,25 @@ sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
 # Restart Nginx to apply the new configuration
 sudo systemctl restart nginx
 
-# Build and run the Docker containers from the app directory (~/myapp)
+# Start PostgreSQL container
 cd $APP_DIR
-sudo docker-compose build --no-cache
-sudo docker-compose up -d
+sudo docker-compose up -d db
+
+# Wait for PostgreSQL to be ready
+echo "Waiting for PostgreSQL to be ready..."
+until sudo docker-compose exec db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+do
+  echo "PostgreSQL is unavailable - sleeping"
+  sleep 1
+done
+
+echo "PostgreSQL is up - executing command"
+
+# Run database migrations (if any)
+sudo docker-compose run --rm web npx prisma migrate deploy
+
+# Build and start the web application
+sudo docker-compose up -d --build web
 
 # Check if Docker Compose started correctly
 if ! sudo docker-compose ps | grep "Up"; then
