@@ -78,8 +78,11 @@ echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> "$APP_DIR/.env"
 echo "POSTGRES_DB=$POSTGRES_DB" >> "$APP_DIR/.env"
 echo "DATABASE_URL=$DATABASE_URL" >> "$APP_DIR/.env"
 echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> "$APP_DIR/.env"
-echo "NEXTAUTH_URL=$DOMAIN_NAME" >> "$APP_DIR/.env"
-echo "NEXTAPP_URL=$DOMAIN_NAME" >> "$APP_DIR/.env"
+echo "NEXTAUTH_URL=https://$DOMAIN_NAME" >> "$APP_DIR/.env"
+echo "NEXTAPP_URL=https://$DOMAIN_NAME" >> "$APP_DIR/.env"
+
+# Modify docker-compose.yml to use environment variables from .env file
+sed -i 's/- NODE_ENV=production/&\n      - DATABASE_URL=${DATABASE_URL}\n      - NEXTAUTH_URL=${NEXTAUTH_URL}\n      - NEXTAPP_URL=${NEXTAPP_URL}\n      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}/' "$APP_DIR/docker-compose.yml"
 
 # Install Nginx
 sudo apt install nginx -y
@@ -144,7 +147,8 @@ sudo systemctl restart nginx
 
 # Build and run the Docker containers from the app directory (~/myapp)
 cd $APP_DIR
-sudo docker-compose up --build -d
+sudo docker-compose build --no-cache
+sudo docker-compose up -d
 
 # Check if Docker Compose started correctly
 if ! sudo docker-compose ps | grep "Up"; then
@@ -162,4 +166,4 @@ The .env file has been created with the following values:
 - DATABASE_URL
 - NEXTAUTH_SECRET
 - NEXTAUTH_URL
-- NEXTAPP_URL
+- NEXTAPP_URL"
