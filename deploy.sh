@@ -2,9 +2,9 @@
 
 # Env Vars
 POSTGRES_USER="postgres"
-POSTGRES_PASSWORD=$(openssl rand -base64 12)  # Random 12-character password
+POSTGRES_PASSWORD=$(openssl rand -base64 12)  # Generate a random 12-character password
 POSTGRES_DB="mydb"
-NEXTAUTH_SECRET=$(openssl rand -base64 32)  # Random 32-character secret
+NEXTAUTH_SECRET=$(openssl rand -base64 32)  # Generate random 32-character secret
 DOMAIN_NAME="your@domain.com"  # Replace with your actual domain name
 EMAIL="your@email.com"  # Replace with your own email
 
@@ -13,7 +13,7 @@ REPO_URL="https://github.com/KylianBalpe/t3-app-router.git"
 APP_DIR=~/myapp
 SWAP_SIZE="1G"  # Swap size of 1GB
 
-# Update package list and upgrade existing packages
+# Update and upgrade existing packages
 sudo apt update && sudo apt upgrade -y
 
 # Add Swap Space
@@ -51,8 +51,8 @@ else
   cd $APP_DIR
 fi
 
-# Prepare .env file
-DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432/$POSTGRES_DB"
+# Prepare the `.env` file with localhost database connection
+DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DB"
 
 cat > "$APP_DIR/.env" <<EOL
 POSTGRES_USER=$POSTGRES_USER
@@ -64,28 +64,31 @@ NEXTAUTH_URL=https://$DOMAIN_NAME
 NEXTAPP_URL=https://$DOMAIN_NAME
 EOL
 
-# Configure docker-compose.yml
-# Add environment variables to the `web` service dynamically
+# Configure docker-compose.yml for the web service
 sed -i '/- NODE_ENV=production/a\
       - DATABASE_URL=${DATABASE_URL}\
       - NEXTAUTH_URL=${NEXTAUTH_URL}\
       - NEXTAPP_URL=${NEXTAPP_URL}\
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}' "$APP_DIR/docker-compose.yml"
 
-# Install Nginx
+# Install and stop Nginx (temporarily for Certbot)
 sudo apt install nginx -y
+sudo systemctl stop nginx
+
+# Set up SSL Certificates using Certbot
+sudo apt install certbot -y
+sudo certbot certonly --standalone -d $DOMAIN_NAME --non-interactive --agree-tos -m $EMAIL || {
+  echo "Certbot failed to issue SSL certificates. Check your domain and configuration.";
+  exit 1;
+}
 
 # Configure Nginx
-sudo rm -f /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
-sudo systemctl stop nginx  # To avoid port conflicts with Certbot
-sudo apt install certbot -y
-sudo certbot certonly --standalone -d $DOMAIN_NAME --non-interactive --agree-tos -m $EMAIL
-
 cat > /etc/nginx/sites-available/myapp <<EOL
 limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 server {
     listen 80;
     server_name $DOMAIN_NAME;
+    # Redirect all HTTP to HTTPS
     return 301 https://\$host\$request_uri;
 }
 server {
@@ -95,6 +98,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+    # Enable rate limiting
     limit_req zone=mylimit burst=20 nodelay;
     location / {
         proxy_pass http://localhost:3000;
@@ -103,46 +107,41 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host \$host;
         proxy_cache_bypass \$http_upgrade;
+        # Disable buffering for streaming support
         proxy_buffering off;
         proxy_set_header X-Accel-Buffering no;
     }
 }
 EOL
 
-if [ ! -L /etc/nginx/sites-enabled/myapp ]; then
-  sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
-fi
-
+sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
 sudo systemctl restart nginx
 
-# Start Docker Compose services
-cd $APP_DIR
-sudo docker-compose up -d db  # Start only the database first
+# Start PostgreSQL Locally
+echo "Checking PostgreSQL status on localhost..."
+sudo systemctl restart postgresql
+sudo systemctl enable postgresql
 
-# Wait for PostgreSQL to become available
+# Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
-until sudo docker-compose exec db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB >/dev/null 2>&1; do
-  echo "PostgreSQL is unavailable - waiting..."
+for i in {1..10}; do
+  sudo -u postgres psql -c "SELECT 1" > /dev/null 2>&1 && break
+  echo "PostgreSQL is unavailable - retrying in 5 seconds..."
   sleep 5
 done
-echo "PostgreSQL is ready!"
 
-# Run Prisma migrations
-echo "Running migrations..."
+# Run Prisma Migrations
+echo "Running Prisma migrations..."
 sudo docker-compose run --rm web npx prisma migrate deploy || { echo "Prisma migrations failed."; exit 1; }
 
-# Build and start the web service
-echo "Building and starting the web service..."
+# Build and Start the Web Service
+echo "Starting the web service..."
 sudo docker-compose up -d --build web
 
-# Verify everything is running
+# Verify everything started properly
 if ! sudo docker-compose ps | grep "Up"; then
-  echo "Docker containers failed to start properly. Check logs using 'docker-compose logs'."
+  echo "Some Docker containers failed to start. Check logs with 'docker-compose logs'."
   exit 1
 fi
 
-# Final message
-echo "Deployment complete! Your T3 Stack app is now live:
-- Next.js: https://$DOMAIN_NAME
-- PostgreSQL: Accessible from the web service.
-Environment variables have been saved to $APP_DIR/.env."
+echo "Deployment complete! Your app is live at https://$DOMAIN_NAME."
