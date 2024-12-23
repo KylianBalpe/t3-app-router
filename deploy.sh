@@ -2,11 +2,11 @@
 
 # Env Vars
 POSTGRES_USER="postgres"
-POSTGRES_PASSWORD=$(openssl rand -base64 12)  # Generate a random 12-character password
+POSTGRES_PASSWORD=$(openssl rand -base64 12)  # Random 12-character password
 POSTGRES_DB="mydb"
-NEXTAUTH_SECRET=$(openssl rand -base64 32)
-DOMAIN_NAME="your@domain.com" # replace with your own
-EMAIL="your@email.com" # replace with your own
+NEXTAUTH_SECRET=$(openssl rand -base64 32)  # Random 32-character secret
+DOMAIN_NAME="your@domain.com"  # Replace with your actual domain name
+EMAIL="your@email.com"  # Replace with your own email
 
 # Script Vars
 REPO_URL="https://github.com/KylianBalpe/t3-app-router.git"
@@ -22,8 +22,6 @@ sudo fallocate -l $SWAP_SIZE /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
-
-# Make swap permanent
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # Install Docker
@@ -34,26 +32,10 @@ sudo apt update
 sudo apt install docker-ce -y
 
 # Install Docker Compose
-sudo rm -f /usr/local/bin/docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-# Wait for the file to be fully downloaded before proceeding
-if [ ! -f /usr/local/bin/docker-compose ]; then
-  echo "Docker Compose download failed. Exiting."
-  exit 1
-fi
-
 sudo chmod +x /usr/local/bin/docker-compose
-
-# Ensure Docker Compose is executable and in path
 sudo ln -sf /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-# Verify Docker Compose installation
-docker-compose --version
-if [ $? -ne 0 ]; then
-  echo "Docker Compose installation failed. Exiting."
-  exit 1
-fi
+docker-compose --version || { echo "Docker Compose installation failed. Exiting."; exit 1; }
 
 # Ensure Docker starts on boot and start Docker service
 sudo systemctl enable docker
@@ -69,51 +51,41 @@ else
   cd $APP_DIR
 fi
 
-# For external tools (like Drizzle Studio)
+# Prepare .env file
 DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432/$POSTGRES_DB"
 
-# Create the .env file inside the app directory (~/myapp/.env)
-echo "POSTGRES_USER=$POSTGRES_USER" > "$APP_DIR/.env"
-echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> "$APP_DIR/.env"
-echo "POSTGRES_DB=$POSTGRES_DB" >> "$APP_DIR/.env"
-echo "DATABASE_URL=$DATABASE_URL" >> "$APP_DIR/.env"
-echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> "$APP_DIR/.env"
-echo "NEXTAUTH_URL=https://$DOMAIN_NAME" >> "$APP_DIR/.env"
-echo "NEXTAPP_URL=https://$DOMAIN_NAME" >> "$APP_DIR/.env"
+cat > "$APP_DIR/.env" <<EOL
+POSTGRES_USER=$POSTGRES_USER
+POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+POSTGRES_DB=$POSTGRES_DB
+DATABASE_URL=$DATABASE_URL
+NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+NEXTAUTH_URL=https://$DOMAIN_NAME
+NEXTAPP_URL=https://$DOMAIN_NAME
+EOL
 
-# Modify docker-compose.yml to use environment variables from .env file
-sed -i 's/- NODE_ENV=production/&\n      - DATABASE_URL=${DATABASE_URL}\n      - NEXTAUTH_URL=${NEXTAUTH_URL}\n      - NEXTAPP_URL=${NEXTAPP_URL}\n      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}/' "$APP_DIR/docker-compose.yml"
+# Configure docker-compose.yml
+# Add environment variables to the `web` service dynamically
+sed -i '/- NODE_ENV=production/a\
+      - DATABASE_URL=${DATABASE_URL}\
+      - NEXTAUTH_URL=${NEXTAUTH_URL}\
+      - NEXTAPP_URL=${NEXTAPP_URL}\
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}' "$APP_DIR/docker-compose.yml"
 
 # Install Nginx
 sudo apt install nginx -y
 
-# Remove old Nginx config (if it exists)
-sudo rm -f /etc/nginx/sites-available/myapp
-sudo rm -f /etc/nginx/sites-enabled/myapp
-
-# Stop Nginx temporarily to allow Certbot to run in standalone mode
-sudo systemctl stop nginx
-
-# Obtain SSL certificate using Certbot standalone mode
+# Configure Nginx
+sudo rm -f /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
+sudo systemctl stop nginx  # To avoid port conflicts with Certbot
 sudo apt install certbot -y
 sudo certbot certonly --standalone -d $DOMAIN_NAME --non-interactive --agree-tos -m $EMAIL
 
-# Ensure SSL files exist or generate them
-if [ ! -f /etc/letsencrypt/options-ssl-nginx.conf ]; then
-  sudo wget https://raw.githubusercontent.com/certbot/certbot/main/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf -P /etc/letsencrypt/
-fi
-
-if [ ! -f /etc/letsencrypt/ssl-dhparams.pem ]; then
-  sudo openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
-fi
-
-# Create Nginx config with reverse proxy, SSL support, rate limiting, and streaming support
-sudo tee /etc/nginx/sites-available/myapp > /dev/null <<EOL
+cat > /etc/nginx/sites-available/myapp <<EOL
 limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 server {
     listen 80;
     server_name $DOMAIN_NAME;
-    # Redirect all HTTP requests to HTTPS
     return 301 https://\$host\$request_uri;
 }
 server {
@@ -123,7 +95,6 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-    # Enable rate limiting
     limit_req zone=mylimit burst=20 nodelay;
     location / {
         proxy_pass http://localhost:3000;
@@ -132,53 +103,46 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host \$host;
         proxy_cache_bypass \$http_upgrade;
-        # Disable buffering for streaming support
         proxy_buffering off;
         proxy_set_header X-Accel-Buffering no;
     }
 }
 EOL
 
-# Create symbolic link if it doesn't already exist
-sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
+if [ ! -L /etc/nginx/sites-enabled/myapp ]; then
+  sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/myapp
+fi
 
-# Restart Nginx to apply the new configuration
 sudo systemctl restart nginx
 
-# Start PostgreSQL container
+# Start Docker Compose services
 cd $APP_DIR
-sudo docker-compose up -d db
+sudo docker-compose up -d db  # Start only the database first
 
-# Wait for PostgreSQL to be ready
+# Wait for PostgreSQL to become available
 echo "Waiting for PostgreSQL to be ready..."
-until sudo docker-compose exec db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
-do
-  echo "PostgreSQL is unavailable - sleeping"
-  sleep 1
+until sudo docker-compose exec db pg_isready -U $POSTGRES_USER -d $POSTGRES_DB >/dev/null 2>&1; do
+  echo "PostgreSQL is unavailable - waiting..."
+  sleep 5
 done
+echo "PostgreSQL is ready!"
 
-echo "PostgreSQL is up - executing command"
+# Run Prisma migrations
+echo "Running migrations..."
+sudo docker-compose run --rm web npx prisma migrate deploy || { echo "Prisma migrations failed."; exit 1; }
 
-# Run database migrations (if any)
-sudo docker-compose run --rm web npx prisma migrate deploy
-
-# Build and start the web application
+# Build and start the web service
+echo "Building and starting the web service..."
 sudo docker-compose up -d --build web
 
-# Check if Docker Compose started correctly
+# Verify everything is running
 if ! sudo docker-compose ps | grep "Up"; then
-  echo "Docker containers failed to start. Check logs with 'docker-compose logs'."
+  echo "Docker containers failed to start properly. Check logs using 'docker-compose logs'."
   exit 1
 fi
 
-# Output final message
-echo "Deployment complete. Your T3 Stack app and PostgreSQL database are now running.
-Next.js is available at https://$DOMAIN_NAME, and the PostgreSQL database is accessible from the web service.
-The .env file has been created with the following values:
-- POSTGRES_USER
-- POSTGRES_PASSWORD
-- POSTGRES_DB
-- DATABASE_URL
-- NEXTAUTH_SECRET
-- NEXTAUTH_URL
-- NEXTAPP_URL"
+# Final message
+echo "Deployment complete! Your T3 Stack app is now live:
+- Next.js: https://$DOMAIN_NAME
+- PostgreSQL: Accessible from the web service.
+Environment variables have been saved to $APP_DIR/.env."
