@@ -46,12 +46,12 @@ export default function SignInForm() {
       });
 
       if (res?.error) {
-        toast(res.error);
+        toast.error(res.error);
         setIsLoading(false);
         return;
       }
 
-      toast("Logged in successfully");
+      toast.success("Logged in successfully");
       router.push("/");
     } catch (error) {
       console.error(error);
@@ -101,7 +101,7 @@ export default function SignInForm() {
           </Button>
           <div className="relative flex w-full items-center justify-center py-4">
             <Separator />
-            <span className="bg-accent absolute px-2 text-sm">
+            <span className="absolute bg-accent px-2 text-sm">
               Don&apos;t have an account?
             </span>
           </div>
