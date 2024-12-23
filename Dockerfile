@@ -8,6 +8,7 @@ RUN apk add --no-cache openssl
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
+COPY prisma ./prisma
 RUN npm install
 
 # Stage 2: Build the application
